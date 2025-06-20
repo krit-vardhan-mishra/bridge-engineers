@@ -30,7 +30,7 @@ public class Main {
                     System.out.println("2. No");
                     int operationChoice = sc.nextInt();
                     sc.nextLine();
-                    
+
                     switch (operationChoice) {
                         case 1:
                             System.out.println("What operation do you want to perform?");
@@ -41,7 +41,7 @@ public class Main {
                             System.out.println("5. Get Blogs Count");
                             System.out.println("6. Log Out");
                             System.out.print("Choose an option: ");
-                            int operation = sc.nextInt();   
+                            int operation = sc.nextInt();
                             sc.nextLine();
 
                             switch (operation) {
@@ -66,7 +66,7 @@ public class Main {
                                     }
                                     System.out.print("Enter blog ID to edit: ");
                                     int editId = sc.nextInt();
-                                    sc.nextLine(); // Consume newline
+                                    sc.nextLine();
                                     Blog blogToEdit = user.editBlog(editId);
                                     if (blogToEdit != null) {
                                         System.out.print("Enter new title: ");
@@ -83,15 +83,44 @@ public class Main {
                                     }
                                     break;
 
+                                case 3:
+                                    if (user.getBlogsCount() == 0) {
+                                        System.out.println("No blogs available to delete.");
+                                        break;
+                                    }
+                                    System.out.print("Enter blog ID to delete: ");
+                                    int deleteId = sc.nextInt();
+                                    sc.nextLine();
+                                    if (user.deleteBlogById(deleteId)) {
+                                        System.out.println("Blog deleted successfully!");
+                                    } else {
+                                        System.out.println("Blog not found.");
+                                    }
+                                    break;
+
                                 case 4:
                                     user.getBlogs();
                                     break;
-                            
+
+                                case 5:
+                                    System.out.println(
+                                            "Total blogs created by " + user.getName() + ": " + user.getBlogsCount());
+                                    break;
+
+                                case 6:
+                                    System.out.println("Logging out...");
+                                    user = null;
+
+                                    break;
+
                                 default:
                                     break;
                             }
                             break;
-                    
+
+                        case 2:
+                            break;
+
                         default:
                             break;
                     }
@@ -106,12 +135,13 @@ public class Main {
                     System.out.print("Enter username: ");
                     String loginUsername = sc.nextLine();
                     User currentUser = null;
-                    for (User user : users) {
-                        if (user.getName().equals(loginUsername)) {
-                            currentUser = user;
+                    for (User singleUser : users) {
+                        if (singleUser.getName().equals(loginUsername)) {
+                            currentUser = singleUser;
                             break;
                         }
                     }
+
                     if (currentUser == null) {
                         System.out.println("User not found.");
                         break;
@@ -125,7 +155,7 @@ public class Main {
                         System.out.println("5. Logout");
                         System.out.print("Choose an option: ");
                         int userChoice = sc.nextInt();
-                        sc.nextLine(); // Consume newline
+                        sc.nextLine();
 
                         switch (userChoice) {
                             case 1:
@@ -144,16 +174,11 @@ public class Main {
                                 }
                                 System.out.print("Enter blog ID to edit: ");
                                 int editId = sc.nextInt();
-                                sc.nextLine(); // Consume newline
+                                sc.nextLine();
                                 Blog blogToEdit = currentUser.editBlog(editId);
                                 if (blogToEdit != null) {
                                     System.out.print("Enter new title: ");
                                     String newTitle = sc.nextLine();
-                                }
-                            }
-                        }
-                    }
-                                if (blogToEdit != null) {
                                     System.out.print("Enter new content: ");
                                     String newContent = sc.nextLine();
                                     if (blogToEdit.updateTitle(newTitle) && blogToEdit.updateContent(newContent)) {
@@ -173,7 +198,7 @@ public class Main {
                                 }
                                 System.out.print("Enter blog ID to delete: ");
                                 int deleteId = sc.nextInt();
-                                sc.nextLine(); // Consume newline
+                                sc.nextLine();
                                 if (currentUser.deleteBlogById(deleteId)) {
                                     System.out.println("Blog deleted successfully!");
                                 } else {
@@ -182,13 +207,7 @@ public class Main {
                                 break;
 
                             case 4:
-                                if (currentUser.getBlogsCount() == 0) {
-                                    System.out.println("No blogs available.");
-                                } else {
-                                    for (Blog blog : currentUser.getBlogs()) {
-                                        System.out.println("ID: " + blog.getId() + ", Title: " + blog.getTitle());
-                                    }
-                                }
+                                currentUser.getBlogs();
                                 break;
 
                             case 5:
@@ -198,13 +217,36 @@ public class Main {
 
                             default:
                                 System.out.println("Invalid option. Please try again.");
-                        }
-
-                        if (currentUser == null) {
-                            break; // Exit the user menu
+                                break;
                         }
                     }
+
+                case 3:
+                    System.out.print("Enter username to delete: ");
+                    String deleteUsername = sc.nextLine();
+                    User userToDelete = null;
+                    for (User singleUser : users) {
+                        if (singleUser.getName().equals(deleteUsername)) {
+                            userToDelete = singleUser;
+                            break;
+                        }
+                    }
+
+                    if (userToDelete != null) {
+                        users.remove(userToDelete);
+                        System.out.println("User deleted successfully.");
+                    } else {
+                        System.out.println("User not found.");
+                    }
+                    break;
+
+                case 4:
+                    System.out.println("Exiting the application. Goodbye!");
+                    return;
+
+                default:
+                    break;
+            }
         } while (true);
-        sc.close();
     }
 }

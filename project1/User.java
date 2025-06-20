@@ -27,6 +27,14 @@ class User {
         return false;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Blog editBlog(int id) {
         for (Blog blog : blogs) {
             if (blog.getId() == id) {
