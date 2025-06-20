@@ -22,7 +22,8 @@ public class Main {
                 case 1:
                     System.out.print("Enter username: ");
                     String username = sc.nextLine();
-                    users.add(new User(username));
+                    User user = new User(username);
+                    users.add(user);
                     System.out.println("User created successfully!");
                     System.out.println("You want to perform any operation? (yes/no)");
                     System.out.println("1. Yes");
@@ -43,7 +44,52 @@ public class Main {
                             int operation = sc.nextInt();   
                             sc.nextLine();
 
+                            switch (operation) {
+
+                                case 1:
+                                    System.out.println("Enter blog title: ");
+                                    String title = sc.nextLine();
+                                    System.out.println("Enter blog content: ");
+                                    String content = sc.nextLine();
+                                    int blogId = user.createBlog(title, content);
+                                    if (blogId > 0) {
+                                        System.out.println("Blog created successfully with ID: " + blogId);
+                                    } else {
+                                        System.out.println("Failed to create blog.");
+                                    }
+                                    break;
+
+                                case 2:
+                                    if (user.getBlogsCount() == 0) {
+                                        System.out.println("No blogs available to edit.");
+                                        break;
+                                    }
+                                    System.out.print("Enter blog ID to edit: ");
+                                    int editId = sc.nextInt();
+                                    sc.nextLine(); // Consume newline
+                                    Blog blogToEdit = user.editBlog(editId);
+                                    if (blogToEdit != null) {
+                                        System.out.print("Enter new title: ");
+                                        String newTitle = sc.nextLine();
+                                        System.out.print("Enter new content: ");
+                                        String newContent = sc.nextLine();
+                                        if (blogToEdit.updateTitle(newTitle) && blogToEdit.updateContent(newContent)) {
+                                            System.out.println("Blog updated successfully!");
+                                        } else {
+                                            System.out.println("Failed to update blog.");
+                                        }
+                                    } else {
+                                        System.out.println("Blog not found.");
+                                    }
+                                    break;
+
+                                case 4:
+                                    user.getBlogs();
+                                    break;
                             
+                                default:
+                                    break;
+                            }
                             break;
                     
                         default:

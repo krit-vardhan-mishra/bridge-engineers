@@ -42,6 +42,12 @@ class User {
         return newBlog.getId();
     }
 
+    public void getBlogs() {
+        for (Blog blog : blogs) {
+            System.out.println(blog.toString());
+        }
+    }
+
     public boolean postBlog() {
         if (blogs.size() > 0) {
             return true;
