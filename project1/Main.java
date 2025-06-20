@@ -45,9 +45,8 @@ public class Main {
                             sc.nextLine();
 
                             switch (operation) {
-
                                 case 1:
-                                    System.out.println("Enter blog title: ");
+                                    System.out.print("Enter blog title: ");
                                     String title = sc.nextLine();
                                     System.out.println("Enter blog content: ");
                                     String content = sc.nextLine();
@@ -99,32 +98,23 @@ public class Main {
                                     break;
 
                                 case 4:
-                                    user.getBlogs();
+                                    System.out.println(user.getAllBlogs());
                                     break;
 
                                 case 5:
-                                    System.out.println(
-                                            "Total blogs created by " + user.getName() + ": " + user.getBlogsCount());
+                                    System.out.println("Total blogs created by " + user.getName() + ": " + user.getBlogsCount());
                                     break;
 
                                 case 6:
                                     System.out.println("Logging out...");
                                     user = null;
-
-                                    break;
-
-                                default:
                                     break;
                             }
                             break;
 
                         case 2:
                             break;
-
-                        default:
-                            break;
                     }
-
                     break;
 
                 case 2:
@@ -207,7 +197,7 @@ public class Main {
                                 break;
 
                             case 4:
-                                currentUser.getBlogs();
+                                currentUser.getAllBlogs();
                                 break;
 
                             case 5:
@@ -245,6 +235,7 @@ public class Main {
                     return;
 
                 default:
+                    sc.close();
                     break;
             }
         } while (true);

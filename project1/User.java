@@ -5,8 +5,14 @@ import java.util.List;
 
 class User {
     private String name;
+    private String age;
     private static int blogIdCounter = 0;
     private List<Blog> blogs = new ArrayList<>();
+
+    public User(String name, String age) {
+        this.name = name;
+        this.age = age;
+    }
 
     public User(String name) {
         this.name = name;
@@ -14,17 +20,6 @@ class User {
 
     public int getBlogsCount() {
         return blogs.size();
-    }
-
-    public boolean deleteBlogById(int id) {
-        for (int i = 0; i < blogs.size(); i++) {
-            if (blogs.get(i).getId() == id) {
-                blogs.remove(i);
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public String getName() {
@@ -35,13 +30,12 @@ class User {
         this.name = name;
     }
 
-    public Blog editBlog(int id) {
-        for (Blog blog : blogs) {
-            if (blog.getId() == id) {
-                return blog;
-            }
-        }
-        return null;
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
     }
 
     public int createBlog(String title, String content) {
@@ -50,16 +44,39 @@ class User {
         return newBlog.getId();
     }
 
-    public void getBlogs() {
+    public Blog getBlogById(int id) {
         for (Blog blog : blogs) {
-            System.out.println(blog.toString());
+            if (blog.getId() == id) {
+                return blog;
+            }
         }
+        return null;
     }
 
-    public boolean postBlog() {
-        if (blogs.size() > 0) {
-            return true;
+    public boolean deleteBlogById(int id) {
+        for (int i = 0; i < blogs.size(); i++) {
+            if (blogs.get(i).getId() == id) {
+                blogs.remove(i);
+                return true;
+            }
         }
         return false;
+    }
+
+    public boolean canPostBlog() {
+        return !blogs.isEmpty();
+    }
+
+    public List<Blog> getAllBlogs() {
+        return blogs;
+    }
+
+    public Blog editBlog(int id) {
+        for (Blog blog : blogs) {
+            if (blog.getId() == id) {
+                return blog;
+            }
+        }
+        return null;
     }
 }
