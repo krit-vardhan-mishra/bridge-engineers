@@ -1,5 +1,4 @@
-// components/FeaturesSidebar.jsx
-import CardBox from "../components/ui/CardBox";
+import CardBox from "./ui/CardBox";
 import { PenLine, FileTextIcon, Trash, Users, ArrowRightCircle } from "lucide-react";
 
 export const FeaturesSidebar = () => {
