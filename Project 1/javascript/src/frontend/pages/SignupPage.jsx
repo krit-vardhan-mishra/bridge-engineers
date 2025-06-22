@@ -43,6 +43,52 @@ export const SignupPage = () => {
           <div className="grid grid-cols-4 gap-4 items-center">
             <label
               className="col-span-1 text-white transform transition-transform duration-200 hover:scale-110"
+              htmlFor="firstName"
+            >
+              <b>First Name:</b>
+            </label>
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="col-span-3 w-full"
+            >
+              <input
+                type="text"
+                id="firstName"
+                className="w-full p-3 bg-[#1C222A] text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 hover:border-white hover:border-2 transition duration-200"
+                placeholder="Enter your email"
+                required
+              />
+            </motion.div>
+          </div>
+
+          {/* Email */}
+          <div className="grid grid-cols-4 gap-4 items-center">
+            <label
+              className="col-span-1 text-white transform transition-transform duration-200 hover:scale-110"
+              htmlFor="lastName"
+            >
+              <b>Last Name:</b>
+            </label>
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="col-span-3 w-full"
+            >
+              <input
+                type="text"
+                id="lastName"
+                className="w-full p-3 bg-[#1C222A] text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 hover:border-white hover:border-2 transition duration-200"
+                placeholder="Enter your email"
+                required
+              />
+            </motion.div>
+          </div>
+
+          {/* Email */}
+          <div className="grid grid-cols-4 gap-4 items-center">
+            <label
+              className="col-span-1 text-white transform transition-transform duration-200 hover:scale-110"
               htmlFor="email"
             >
               <b>Email:</b>

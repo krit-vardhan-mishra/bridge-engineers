@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '../components/Header';
-import { HomeIcon, UserIcon, SettingsIcon } from 'lucide-react';
+import { HomeIcon, UserIcon, SettingsIcon, Plus, X } from 'lucide-react';
 import NotifyBanner from '../components/NotifyBanner';
 import { getTimeBasedGreeting, getCurrentDateTime, getCurrentUser } from '../utils/greetingUtils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import CreatePost from '../components/CreatePost';
 import PostDetails from './PostDetails';
+import EditPost from '../components/EditPost';
 
 export const HomePage = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [greeting, setGreeting] = useState('');
   const [userName, setUserName] = useState('Krit');
+  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const [isEditPostOpen, setIsEditPostOpen] = useState(false);
 
   useEffect(() => {
     document.title = "Home - Blog Web App";
@@ -30,9 +34,14 @@ export const HomePage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleEditPost = () => {
+    console.log('Edit post clicked');
+    setIsEditPostOpen(true);
+  };
+
   return (
     <div className="bg-[#1C222A] min-h-screen">
-      <Header title="Home" icons={[{ icon: HomeIcon, link: '/home'}, { icon: UserIcon, link: '/your-posts'}, { icon: SettingsIcon, link: '/'}]} />
+      <Header title="Home" icons={[{ icon: HomeIcon, link: '/home' }, { icon: UserIcon, link: '/your-posts' }, { icon: SettingsIcon, link: '/account-setting' }]} />
 
       <div className="max-w-4xl mx-auto p-6">
         {/* Dynamic Greeting */}
@@ -86,16 +95,78 @@ export const HomePage = () => {
           </motion.div>
         </div>
 
-        <PostDetails title={'Hunter'} content={'sahfhuhafh sauidfhisafkjdkj usahfiahfjopajfdsnxzia fusdhifcaiushfiuhsa dfhuehsidfnkajs f9heudshfuasmf'} author={'Hunter K'} />
-        <PostDetails title={'Shikari'} content={'kafl j[aflds] sauidfhisafkjdkj usahfiahfjopajfdsnxzia dsfalkj sadjfk f9heudshfuasmf'} author={'Hunter J'} />
-        <PostDetails title={'Hantarr'} content={'jaflkj af sauidfhisafkjdkj usahfiahfjopajfdsnxzia klaf dfhuehsidfnkajs asfjklf'} author={'Hunter L'} />
+        <PostDetails title={'Hunter'} content={'sahfhuhafh sauidfhisafkjdkj usahfiahfjopajfdsnxzia fusdhifcaiushfiuhsa dfhuehsidfnkajs f9heudshfuasmf'} author={'Hunter K'} onEdit={handleEditPost} />
+        <PostDetails title={'Shikari'} content={'kafl j[aflds] sauidfhisafkjdkj usahfiahfjopajfdsnxzia dsfalkj sadjfk f9heudshfuasmf'} author={'Hunter J'} onEdit={handleEditPost} />
+        <PostDetails title={'Hantarr'} content={'jaflkj af sauidfhisafkjdkj usahfiahfjopajfdsnxzia klaf dfhuehsidfnkajs asfjklf'} author={'Hunter L'} onEdit={handleEditPost} />
       </div>
 
-      {showBanner && (
-          <NotifyBanner
-            message="Welcome back to the Blog Web App!"
-            onClose={() => setShowBanner(false)}/>
+      <div
+        onClick={() => setIsCreatePostOpen(true)}
+        className="fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg cursor-pointer transition-all duration-300">
+        <Plus className="w-6 h-6" />
+      </div>
+
+       <AnimatePresence>
+        {isCreatePostOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={() => setIsCreatePostOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              className="bg-[#1C222A] p-6 rounded-lg shadow-lg w-full max-w-md relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setIsCreatePostOpen(false)}
+                className="absolute top-2 right-2 text-gray-400 hover:text-white"
+              >
+                <X className="h-5 w-5 m-2 text-red-700 hover:text-red-500" />
+              </button>
+              <CreatePost />
+            </motion.div>
+          </motion.div>
         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isEditPostOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={() => setIsEditPostOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              className="bg-[#1C222A] p-6 rounded-lg shadow-lg w-full max-w-md relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setIsEditPostOpen(false)}
+                className="absolute top-2 right-2 text-red-500 hover:text-white"
+              >
+                <X className="h-5 w-5 m-5 text-red-700 hover:text-red-500" />
+              </button>
+              <EditPost />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {showBanner && (
+        <NotifyBanner
+          message="Welcome back to the Blog Web App!"
+          onClose={() => setShowBanner(false)} />
+      )}
     </div >
   );
 };

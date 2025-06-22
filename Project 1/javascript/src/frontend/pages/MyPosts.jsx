@@ -9,7 +9,14 @@ export const MyPosts = () => {
 
   return (
     <div className="bg-[#1C222A] min-h-screen">
-      <Header title="Your Posts" icons={[HomeIcon, UserIcon, Trash2, SettingsIcon]}/>
+      <Header
+        title="Your Posts"
+        icons={[
+          { icon: HomeIcon, link: '/home' },
+          { icon: Trash2, link: '/deleted' },
+          { icon: SettingsIcon, link: '/account-setting' }
+        ]}
+      />
     </div>
   );
 };

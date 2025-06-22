@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Info } from 'lucide-react';
 
 const NotifyBanner = ({ message, duration = 3000, onClose }) => {
