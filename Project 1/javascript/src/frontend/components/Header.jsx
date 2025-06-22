@@ -1,5 +1,5 @@
-import React from 'react';
 import { Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const Header = ({ title, icons = [] }) => {
     return (
@@ -8,14 +8,17 @@ export const Header = ({ title, icons = [] }) => {
                 {title}
             </h1>
             <div className="flex items-center space-x-2 mr-[5px]">
-                {icons.map((Icon, index) => (
-                    <div
-                        key={index}
-                        className={`group p-2 rounded-full transition duration-200 cursor-pointer ${Icon === Trash2 ? 'hover:bg-red-500/50' : 'hover:bg-white/10'
-                            }`}
-                    >
-                        <Icon className="text-white w-6 h-6 transform transition-transform duration-200 group-hover:scale-110" />
-                    </div>
+                {icons.map(({ icon: Icon, link }, index) => (
+                    <Link to={link} key={index}>
+                        <div
+                            className={`group p-2 rounded-full transition duration-200 cursor-pointer ${Icon === Trash2
+                                    ? 'hover:bg-red-500/50'
+                                    : 'hover:bg-white/10'
+                                }`}
+                        >
+                            <Icon className="text-white w-6 h-6 transform transition-transform duration-200 group-hover:scale-110" />
+                        </div>
+                    </Link>
                 ))}
             </div>
         </div>

@@ -4,7 +4,7 @@ class User {
     static blogIdCounter = 0;
 
     constructor(name, age) {
-        this.name = name;
+        this.name = name || 'Krit';
         this.age = age || '';
         this.blogs = [];
     }

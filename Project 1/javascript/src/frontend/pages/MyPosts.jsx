@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Header from '../components/Header';
 import { HomeIcon, UserIcon, Trash2, SettingsIcon } from 'lucide-react';
 

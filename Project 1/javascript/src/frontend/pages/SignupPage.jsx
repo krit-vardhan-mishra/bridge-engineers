@@ -3,17 +3,30 @@ import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "../components/ui/button";
+import { SignupPageSkeleton } from "./skeleton/SignupPageSkeleton";
+
 
 export const SignupPage = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+
   useEffect(() => {
     document.title = "Signup - Blog App";
-  }, []);
 
-  const [showPassword, setShowPassword] = useState(false);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  if (isLoading) {
+    return <SignupPageSkeleton />;
+  }
 
   return (
     <div className="flex h-screen bg-[#1C222A]">
@@ -103,6 +116,12 @@ export const SignupPage = () => {
             </motion.div>
           </div>
         </form>
+        <p className="text-white mt-6">
+          Already have an account?{" "}
+          <a href="/login" className="text-blue-400 hover:underline">
+            Log in
+          </a>
+          </p>
       </div>
     </div>
   );

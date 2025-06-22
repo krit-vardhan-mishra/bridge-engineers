@@ -2,6 +2,7 @@ import { useTypewriter, Cursor } from 'react-simple-typewriter';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from "framer-motion";
 import { NotebookPen } from 'lucide-react';
+import { Button } from "../components/ui/button";
 
 const LandingPage = () => {
     useEffect(() => {

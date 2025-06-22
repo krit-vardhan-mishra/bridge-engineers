@@ -1,19 +1,30 @@
 import { useEffect, useState } from "react";
 import FeaturesSidebar from "../components/FeaturesSidebar";
 import { Button } from "../components/ui/button";
-import { motion } from "framer-motion"; // Ensure this is imported
+import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
+import { LoginPageSkeleton } from "./skeleton/LoginPageSkelton";
 
 export const LoginPage = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+
   useEffect(() => {
     document.title = "Login - Blog App";
-  }, []);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
 
-  const [showPassword, setShowPassword] = useState(false);
+    return () => clearTimeout(timer);
+  }, []);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  if (isLoading) {
+    return <LoginPageSkeleton />;
+  }
 
   return (
     <div className="flex h-screen bg-[#1C222A]">
@@ -103,6 +114,12 @@ export const LoginPage = () => {
             </motion.div>
           </div>
         </form>
+        <p className="text-white mt-6">
+          Don't have an account?{" "}
+          <a href="/signup" className="text-blue-400 hover:underline">
+            Sign up
+          </a>
+        </p>
       </div>
     </div>
   );
