@@ -5,7 +5,7 @@ import SignupPage from './frontend/pages/SignupPage';
 import LoginPage from './frontend/pages/LoginPage';
 import { useTypewriter, Cursor } from 'react-simple-typewriter';
 import { Button } from './frontend/components/ui/button';
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from "framer-motion";
 import { NotebookPen } from 'lucide-react';
 
