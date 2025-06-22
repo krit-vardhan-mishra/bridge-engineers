@@ -24,7 +24,7 @@ function App() {
 
 function Landing() {
   const [welcomeText, setWelcomeText] = useState('');
-  const [actionText, setActionText] = useState('');  
+  const [actionText, setActionText] = useState('');
 
   const [showWelcomeCursor, setShowWelcomeCursor] = useState(true);
   const [startActionTyping, setStartActionTyping] = useState(false);
@@ -47,9 +47,9 @@ function Landing() {
         setStartActionTyping(true);
       }, 0);
     },
-    skipAdd: skipped ? true : undefined, 
-    onType: (text, i) => { 
-        if (!skipped) setWelcomeText(text);
+    skipAdd: skipped ? true : undefined,
+    onType: (text, i) => {
+      if (!skipped) setWelcomeText(text);
     }
   });
 
@@ -64,7 +64,7 @@ function Landing() {
       setShowActionCursor(false);
     },
     onType: (text, i) => {
-        if (!skipped) setActionText(text);
+      if (!skipped) setActionText(text);
     }
   });
 
@@ -73,7 +73,7 @@ function Landing() {
       setSkipped(true);
       setShowWelcomeCursor(false);
       setShowActionCursor(false);
-      setWelcomeText(welcomeWord.current); 
+      setWelcomeText(welcomeWord.current);
       setActionText(actionWord.current);
       setStartActionTyping(true);
     }
@@ -84,15 +84,15 @@ function Landing() {
     return () => {
       document.removeEventListener('click', handlePageClick);
     };
-  }, [handlePageClick]); 
+  }, [handlePageClick]);
 
   useEffect(() => {
-      if (!skipped) {
-          setWelcomeText(typewriterWelcome[0]);
-          if (startActionTyping) {
-              setActionText(typewriterAction[0]);
-          }
+    if (!skipped) {
+      setWelcomeText(typewriterWelcome[0]);
+      if (startActionTyping) {
+        setActionText(typewriterAction[0]);
       }
+    }
   }, [typewriterWelcome[0], typewriterAction[0], skipped, startActionTyping]);
 
 

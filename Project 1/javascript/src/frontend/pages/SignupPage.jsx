@@ -15,8 +15,8 @@ export const SignupPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-col items-center justify-center w-1/2 bg-[#2A2E36]"> {/* Example: a darker background for visual separation */}
-        <p className="text-white text-3xl font-bold mb-8">Welcome to Your Blog Space</p> {/* Increased size and added margin for visibility */}
+      <div className="flex flex-col items-center justify-center w-1/2 bg-[#2A2E36]">
+        <p className="text-white text-3xl font-bold mb-8">Welcome to Your Blog Space</p>
 
         <h1 className="text-white text-4xl font-bold">Signup Here</h1>
         <p className="text-gray-400 mt-4">Form goes here...</p>
