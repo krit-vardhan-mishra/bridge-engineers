@@ -67,6 +67,17 @@ export const LoginPage = () => {
             </div>
           </div>
 
+          <div className="flex justify-center space-x-3">
+            <input
+              type="checkbox"
+              id="remember"
+              className="h-5 w-5 bg-[#1C222A] border border-gray-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-white hover:border-2 transition duration-200"
+            />
+            <label htmlFor="remember" className="text-white">
+              <b>Remember Me</b>
+            </label>
+          </div>
+
           <div className="flex justify-center mt-6">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button className="bg-blue-600 hover:bg-blue-700 text-white" asChild>

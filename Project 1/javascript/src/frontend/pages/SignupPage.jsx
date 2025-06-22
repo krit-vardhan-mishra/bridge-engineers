@@ -1,15 +1,15 @@
 import FeaturesSidebar from "../components/FeaturesSidebar";
 import { useEffect, useState } from "react";
-import { Button } from "../components/ui/button";
-import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "../components/ui/button";
 
 export const SignupPage = () => {
   useEffect(() => {
     document.title = "Signup - Blog App";
   }, []);
 
-    const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -24,11 +24,14 @@ export const SignupPage = () => {
           Welcome to Your Blog Space
         </p>
         <h1 className="text-white text-4xl font-bold mb-10">Sign up Here</h1>
+
         <form className="w-3/4 space-y-6">
+          {/* Email */}
           <div className="grid grid-cols-4 gap-4 items-center">
             <label
               className="col-span-1 text-white transform transition-transform duration-200 hover:scale-110"
-              htmlFor="email">
+              htmlFor="email"
+            >
               <b>Email:</b>
             </label>
             <input
@@ -40,9 +43,12 @@ export const SignupPage = () => {
             />
           </div>
 
+          {/* Password */}
           <div className="grid grid-cols-4 gap-4 items-center">
-            <label className="col-span-1 text-white transform transition-transform duration-200 hover:scale-110"
-              htmlFor="password">
+            <label
+              className="col-span-1 text-white transform transition-transform duration-200 hover:scale-110"
+              htmlFor="password"
+            >
               <b>Password:</b>
             </label>
             <div className="col-span-3 relative">
@@ -54,9 +60,8 @@ export const SignupPage = () => {
                 required
               />
               <div
-                className="absolute inset-y-0 right-0 pr-1 flex items-center cursor-pointer"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                 onClick={togglePasswordVisibility}
-                style={{ right: '0.75rem' }}
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5 text-gray-400 hover:text-white" />
@@ -67,9 +72,20 @@ export const SignupPage = () => {
             </div>
           </div>
 
+          <div className="flex justify-center space-x-3">
+            <input
+              type="checkbox"
+              id="remember"
+              className="h-5 w-5 bg-[#1C222A] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-white hover:border-2 transition duration-200"
+            />
+            <label htmlFor="remember" className="text-white">
+              <b>Remember Me</b>
+            </label>
+          </div>
+
           <div className="flex justify-center mt-6">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white" asChild>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 text-lg rounded-xl" asChild>
                 <a href="/">Sign up</a>
               </Button>
             </motion.div>
