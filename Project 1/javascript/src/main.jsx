@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom/client';
 import SignupPage from './frontend/pages/SignupPage';
 import LoginPage from './frontend/pages/LoginPage';
 import LandingPage from './frontend/pages/LandingPage';
+import { HomePage } from './frontend/pages/HomePage';
+import MyPosts from './frontend/pages/MyPosts';
+import NotFound from './frontend/pages/NotFound';
 
 function App() {
   return (
@@ -12,7 +15,9 @@ function App() {
         <Route path="/" element={< LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/your-posts" element={<MyPosts />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

@@ -34,13 +34,19 @@ export const SignupPage = () => {
             >
               <b>Email:</b>
             </label>
-            <input
-              type="email"
-              id="email"
-              className="col-span-3 p-3 bg-[#1C222A] text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 hover:border-white hover:border-2 transition duration-200"
-              placeholder="Enter your email"
-              required
-            />
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="col-span-3 w-full"
+            >
+              <input
+                type="email"
+                id="email"
+                className="w-full p-3 bg-[#1C222A] text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 hover:border-white hover:border-2 transition duration-200"
+                placeholder="Enter your email"
+                required
+              />
+            </motion.div>
           </div>
 
           {/* Password */}
@@ -51,7 +57,11 @@ export const SignupPage = () => {
             >
               <b>Password:</b>
             </label>
-            <div className="col-span-3 relative">
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="col-span-3 relative w-full"
+            >
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
@@ -69,9 +79,10 @@ export const SignupPage = () => {
                   <Eye className="h-5 w-5 text-gray-400 hover:text-white" />
                 )}
               </div>
-            </div>
+            </motion.div>
           </div>
 
+          {/* Remember Me Checkbox */}
           <div className="flex justify-center space-x-3">
             <input
               type="checkbox"
@@ -83,10 +94,11 @@ export const SignupPage = () => {
             </label>
           </div>
 
+          {/* Sign up Button */}
           <div className="flex justify-center mt-6">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 text-lg rounded-xl" asChild>
-                <a href="/">Sign up</a>
+                <a href="/home">Sign up</a>
               </Button>
             </motion.div>
           </div>
