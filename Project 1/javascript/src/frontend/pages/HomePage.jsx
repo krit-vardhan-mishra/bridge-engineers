@@ -35,7 +35,7 @@ export const HomePage = () => {
   }, []);
 
   const handleEditPost = () => {
-    console.log('Edit post clicked');
+    console.log('Edit post clicked'); // Debug log
     setIsEditPostOpen(true);
   };
 
@@ -71,27 +71,21 @@ export const HomePage = () => {
         {/* Quick Stats or Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="bg-[#2A2E36] rounded-lg p-4 text-center hover:border-2 transition-all duration-100">
-            <div className="bg-[#2A2E36] rounded-lg p-4 text-center">
-              <h3 className="text-white font-semibold mb-2">Your Blogs</h3>
-              <p className="text-2xl font-bold text-blue-400">0</p>
-              <p className="text-gray-400 text-sm">Published posts</p>
-            </div>
+            <h3 className="text-white font-semibold mb-2">Your Blogs</h3>
+            <p className="text-2xl font-bold text-blue-400">0</p>
+            <p className="text-gray-400 text-sm">Published posts</p>
           </motion.div>
 
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="bg-[#2A2E36] rounded-lg p-4 text-center hover:border-2 transition-all duration-100">
-            <div className="bg-[#2A2E36] rounded-lg p-4 text-center">
-              <h3 className="text-white font-semibold mb-2">Total Views</h3>
-              <p className="text-2xl font-bold text-green-400">0</p>
-              <p className="text-gray-400 text-sm">Page views</p>
-            </div>
+            <h3 className="text-white font-semibold mb-2">Total Views</h3>
+            <p className="text-2xl font-bold text-green-400">0</p>
+            <p className="text-gray-400 text-sm">Page views</p>
           </motion.div>
 
           <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="bg-[#2A2E36] rounded-lg p-4 text-center hover:border-2 transition-all duration-100">
-            <div className="bg-[#2A2E36] rounded-lg p-4 text-center">
-              <h3 className="text-white font-semibold mb-2">Last Updated</h3>
-              <p className="text-2xl font-bold text-purple-400">-</p>
-              <p className="text-gray-400 text-sm">Recent activity</p>
-            </div>
+            <h3 className="text-white font-semibold mb-2">Last Updated</h3>
+            <p className="text-2xl font-bold text-purple-400">-</p>
+            <p className="text-gray-400 text-sm">Recent activity</p>
           </motion.div>
         </div>
 
@@ -100,13 +94,15 @@ export const HomePage = () => {
         <PostDetails title={'Hantarr'} content={'jaflkj af sauidfhisafkjdkj usahfiahfjopajfdsnxzia klaf dfhuehsidfnkajs asfjklf'} author={'Hunter L'} onEdit={handleEditPost} />
       </div>
 
+      {/* Floating Action Button */}
       <div
         onClick={() => setIsCreatePostOpen(true)}
         className="fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg cursor-pointer transition-all duration-300">
         <Plus className="w-6 h-6" />
       </div>
 
-       <AnimatePresence>
+      {/* Create Post Modal */}
+      <AnimatePresence>
         {isCreatePostOpen && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -126,7 +122,7 @@ export const HomePage = () => {
                 onClick={() => setIsCreatePostOpen(false)}
                 className="absolute top-2 right-2 text-gray-400 hover:text-white"
               >
-                <X className="h-5 w-5 m-2 text-red-700 hover:text-red-500" />
+                <X className="h-5 w-5 m-5 text-red-700 hover:text-red-500" />
               </button>
               <CreatePost />
             </motion.div>
@@ -134,6 +130,7 @@ export const HomePage = () => {
         )}
       </AnimatePresence>
 
+      {/* Edit Post Modal */}
       <AnimatePresence>
         {isEditPostOpen && (
           <motion.div
@@ -154,7 +151,7 @@ export const HomePage = () => {
                 onClick={() => setIsEditPostOpen(false)}
                 className="absolute top-2 right-2 text-red-500 hover:text-white"
               >
-                <X className="h-5 w-5 m-5 text-red-700 hover:text-red-500" />
+                <X className="h-5 w-5 m-5" />
               </button>
               <EditPost />
             </motion.div>
@@ -162,12 +159,13 @@ export const HomePage = () => {
         )}
       </AnimatePresence>
 
+      {/* Notification Banner */}
       {showBanner && (
         <NotifyBanner
           message="Welcome back to the Blog Web App!"
           onClose={() => setShowBanner(false)} />
       )}
-    </div >
+    </div>
   );
 };
 
