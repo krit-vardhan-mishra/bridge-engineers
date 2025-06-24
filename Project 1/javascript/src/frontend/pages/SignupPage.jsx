@@ -30,8 +30,10 @@ export const SignupPage = () => {
 
   return (
     <div className="flex h-screen bg-[#1C222A]">
+      {/* Left Side -Features Sidebar */}
       <FeaturesSidebar />
 
+      {/* Right Side - Form */}
       <div className="flex flex-col items-center justify-center w-1/2 bg-[#2A2E36]">
         <p className="text-white text-3xl font-bold mb-8">
           Welcome to Your Blog Space

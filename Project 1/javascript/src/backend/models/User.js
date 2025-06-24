@@ -1,64 +1,68 @@
-const Blog = require('./Blog');
-
 class User {
-    static blogIdCounter = 0;
+  constructor(name, age) {
+    this.id = null;
+    this.name = name || 'Anonymous';
+    this.age = age || 0;
+    this.blogs = [];
+  }
 
-    constructor(name, age) {
-        this.name = name || 'Krit';
-        this.age = age || '';
-        this.blogs = [];
-    }
+  getName() {
+    return this.name;
+  }
 
-    getBlogsCount() {
-        return this.blogs.length;
-    }
+  setName(name) {
+    this.name = name;
+  }
 
-    getName() {
-        return this.name;
-    }
+  getAge() {
+    return this.age;
+  }
 
-    setName(name) {
-        this.name = name;
-    }
+  setAge(age) {
+    this.age = age;
+  }
 
-    getAge() {
-        return this.age;
-    }
+  getBlogsCount() {
+    return this.blogs.length;
+  }
 
-    setAge(age) {
-        this.age = age;
-    }
+  getAllBlogs() {
+    return this.blogs;
+  }
 
-    createBlog(title, content) {
-        const newBlog = new Blog(++User.blogIdCounter, title, content, this.name);
-        this.blogs.push(newBlog);
-        return newBlog.getId();
-    }
+  getBlogById(id) {
+    return this.blogs.find(blog => blog.getId() === id) || null;
+  }
 
-    getBlogById(id) {
-        return this.blogs.find(blog => blog.getId() === id) || null;
+  deleteBlogById(id) {
+    const index = this.blogs.findIndex(blog => blog.getId() === id);
+    if (index !== -1) {
+      this.blogs.splice(index, 1);
+      return true;
     }
+    return false;
+  }
 
-    deleteBlogById(id) {
-        const index = this.blogs.findIndex(blog => blog.getId() === id);
-        if (index !== -1) {
-            this.blogs.splice(index, 1);
-            return true;
-        }
-        return false;
-    }
+  canPostBlog() {
+    return this.age >= 13;
+  }
 
-    canPostBlog() {
-        return this.blogs.length > 0;
-    }
+  createBlog(title, content, blogId) {
+    const newBlog = new Blog(blogId, title, content, this.name);
+    this.blogs.push(newBlog);
+    return newBlog.getId();
+  }
 
-    getAllBlogs() {
-        return this.blogs;
-    }
+  editBlog(id) {
+    return this.getBlogById(id);
+  }
 
-    editBlog(id) {
-        return this.getBlogById(id);
-    }
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      age: this.age,
+      blogs: this.blogs.map(blog => blog.toJSON())
+    };
+  }
 }
-
-module.exports = User;

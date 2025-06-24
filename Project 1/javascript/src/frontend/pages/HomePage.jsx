@@ -24,7 +24,6 @@ export const HomePage = () => {
     } else {
       document.title = "Home - Blog Web App";
     }
-    setShowBanner(true);
 
     const currentUser = getCurrentUser();
     const greetingMessage = getTimeBasedGreeting();
@@ -45,6 +44,15 @@ export const HomePage = () => {
     console.log('Edit post clicked');
     setIsEditPostOpen(true);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowBanner(false);
+    }, 3000);
+    setShowBanner(true);
+
+    return () => clearInterval(interval);
+  }, [])
 
   return (
     <div className="bg-[#1C222A] min-h-screen">

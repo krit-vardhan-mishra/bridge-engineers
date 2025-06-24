@@ -21,7 +21,10 @@ const NotifyBanner = ({ message, duration = 3000, onClose }) => {
                 <Info className="text-blue-500 mr-3 w-5 h-5" />
                 <p className="flex-grow text-sm">{message}</p>
                 <button
-                    onClick={() => setVisible(false)}
+                    onClick={() => {
+                        setVisible(false);
+                        onClose?.();
+                    }}
                     className="ml-2 w-8 h-8 flex items-center justify-center p-1 rounded-full hover:bg-red-500/10 transition duration-200 cursor-pointer">
                     ✕
                 </button>
