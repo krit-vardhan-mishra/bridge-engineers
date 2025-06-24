@@ -3,7 +3,8 @@ import Header from '../components/Header';
 import { HomeIcon, Eye, EyeOff, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
-import NotifyBanner from '../components/NotifyBanner';
+import NotifyBanner from '../components/ui/NotifyBanner';
+import Footer from '../components/Footer';
 
 export const AccountSetting = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -256,6 +257,9 @@ export const AccountSetting = () => {
                     </motion.div>
                 </motion.div>
             )}
+
+            <Footer />
+            
             {showNotification && (
                 <NotifyBanner
                     message="Entered data has been updated."

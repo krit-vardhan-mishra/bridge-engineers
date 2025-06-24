@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { HomeIcon, UserIcon, SettingsIcon, Plus, X } from 'lucide-react';
-import NotifyBanner from '../components/NotifyBanner';
+import NotifyBanner from '../components/ui/NotifyBanner';
 import { getTimeBasedGreeting, getCurrentDateTime, getCurrentUser } from '../utils/greetingUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 import CreatePost from '../components/CreatePost';
-import PostDetails from './PostDetails';
+import PostDetails from '../components/PostDetails';
 import EditPost from '../components/EditPost';
+import Footer from '../components/Footer';
 
 export const HomePage = () => {
-  const [showBanner, setShowBanner] = useState(false);
+  const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
+  const [showNotificationBanner, setShowNotificationBanner] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
   const [greeting, setGreeting] = useState('');
   const [userName, setUserName] = useState('Krit');
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
@@ -40,19 +43,46 @@ export const HomePage = () => {
     return () => clearInterval(interval);
   }, [isEditPostOpen, isCreatePostOpen]);
 
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('hasVistiedBlogWebApp');
+
+    if (!hasVisited) {
+      setShowWelcomeBanner(true);
+      localStorage.setItem('hasVistiedBlogWebApp', true);
+      const timer = setTimeout(() => {
+        setShowBanner(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [])
+
+  useEffect(() => {
+    if (showNotificationBanner) {
+      const timer = setTimeout(() => {
+        setShowNotificationBanner(false);
+        setNotificationMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showNotificationBanner]);
+
   const handleEditPost = () => {
     console.log('Edit post clicked');
     setIsEditPostOpen(true);
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowBanner(false);
-    }, 3000);
-    setShowBanner(true);
+  const handlePostCreationSuccess = (message) => {
+    setNotificationMessage(message);
+    setShowNotificationBanner(true);
+    setIsCreatePostOpen(false);
+  };
 
-    return () => clearInterval(interval);
-  }, [])
+  const handlePostUpdateSuccess = (message) => {
+    setNotificationMessage(message);
+    setShowNotificationBanner(true);
+    setIsEditPostOpen(false);
+  }
 
   return (
     <div className="bg-[#1C222A] min-h-screen">
@@ -135,11 +165,11 @@ export const HomePage = () => {
             >
               <button
                 onClick={() => setIsCreatePostOpen(false)}
-                className="absolute top-2 right-2 text-gray-400 hover:text-white"
+                className="absolute top-2 right-2"
               >
                 <X className="h-5 w-5 m-5 text-red-700 hover:text-red-500" />
               </button>
-              <CreatePost />
+              <CreatePost onPostSuccess={handlePostCreationSuccess} />
             </motion.div>
           </motion.div>
         )}
@@ -164,21 +194,29 @@ export const HomePage = () => {
             >
               <button
                 onClick={() => setIsEditPostOpen(false)}
-                className="absolute top-2 right-2 text-red-500 hover:text-white"
+                className="absolute top-2 right-2 "
               >
-                <X className="h-5 w-5 m-5" />
+                <X className="h-5 w-5 m-5 text-red-700 hover:text-red-500" />
               </button>
-              <EditPost />
+              <EditPost onUpdateSuccess={handlePostUpdateSuccess} />
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
+      <Footer />
+
       {/* Notification Banner */}
-      {showBanner && (
+      {showWelcomeBanner && (
         <NotifyBanner
           message="Welcome back to the Blog Web App!"
-          onClose={() => setShowBanner(false)} />
+          onClose={() => setShowWelcomeBanner(false)} />
+      )}
+
+      {showNotificationBanner && notificationMessage && (
+        <NotifyBanner
+        message={notificationMessage}
+        onClose={() => setShowNotificationBanner(false)} />
       )}
     </div>
   );

@@ -20,7 +20,7 @@ export const Header = ({ title, icons = [], className }) => {
                             className={clsx(
                                 `group p-2 rounded-full transition duration-200 cursor-pointer`,
                                 {
-                                    'hover:bg-red-500/50': Icon === Trash2,
+                                    'hover:bg-red-500/50': Icon === Trash2 && title != "Your Deleted Posts",
                                     'hover:bg-red-500/80': Icon === LogOut,
                                     'hover:bg-white/10': Icon !== Trash2 && Icon !== LogOut 
                                 }

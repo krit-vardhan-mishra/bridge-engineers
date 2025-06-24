@@ -9,17 +9,49 @@ export const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     document.title = "Login - Blog App";
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-
+    const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
+
+    if (!formData.email) newErrors.email = "Email is required";
+    else if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email format";
+
+    if (!formData.password) newErrors.password = "Password is required";
+    else if (!passwordRegex.test(formData.password))
+      newErrors.password = "Password must be 8+ chars, include 1 capital letter & 1 symbol";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      // Replace with actual auth logic
+      window.location.href = "/home";
+    }
   };
 
   if (isLoading) {
@@ -35,7 +67,8 @@ export const LoginPage = () => {
           Welcome to Your Blog Space
         </p>
         <h1 className="text-white text-4xl font-bold mb-10">Login Here</h1>
-        <form className="w-3/4 space-y-6">
+
+        <form className="w-3/4 space-y-6" onSubmit={handleSubmit}>
           {/* Email Input */}
           <div className="grid grid-cols-4 gap-4 items-center">
             <label
@@ -44,7 +77,7 @@ export const LoginPage = () => {
             >
               <b>Email:</b>
             </label>
-            <motion.div // Wrap the email input with motion.div
+            <motion.div
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               className="col-span-3 w-full"
@@ -52,44 +85,55 @@ export const LoginPage = () => {
               <input
                 type="email"
                 id="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full p-3 bg-[#1C222A] text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 hover:border-white hover:border-2 transition duration-200"
                 placeholder="Enter your email"
                 required
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </motion.div>
           </div>
 
           {/* Password Input */}
-          <div className="grid grid-cols-4 gap-4 items-center">
+          <div className="grid grid-cols-4 gap-4 items-start">
             <label
-              className="col-span-1 text-white transform transition-transform duration-200 hover:scale-110"
+              className="col-span-1 text-white transform transition-transform duration-200 hover:scale-110 pt-3"
               htmlFor="password"
             >
               <b>Password:</b>
             </label>
-            <motion.div // Wrap the password input (and its relative container) with motion.div
+            <motion.div
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="col-span-3 relative w-full"
+              className="col-span-3 w-full"
             >
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                className="w-full p-3 pr-10 bg-[#1C222A] text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 hover:border-white hover:border-2 transition duration-200"
-                placeholder="Enter your password"
-                required
-              />
-              <div
-                className="absolute inset-y-0 right-0 pr-1 flex items-center cursor-pointer"
-                onClick={togglePasswordVisibility}
-                style={{ right: "0.75rem" }}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400 hover:text-white" />
-                ) : (
-                  <Eye className="h-5 w-5 text-gray-400 hover:text-white" />
-                )}
+              <div className="relative w-full">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full p-3 pr-10 bg-[#1C222A] text-white border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 hover:border-white hover:border-2 transition duration-200"
+                  placeholder="Enter your password"
+                  required
+                />
+                <div
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-white" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-white" />
+                  )}
+                </div>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </motion.div>
           </div>
 
@@ -108,12 +152,13 @@ export const LoginPage = () => {
           {/* Login Button */}
           <div className="flex justify-center mt-6">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white" asChild>
-                <a href="/home">Log in</a>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white" type="submit">
+                Log in
               </Button>
             </motion.div>
           </div>
         </form>
+
         <p className="text-white mt-6">
           Don't have an account?{" "}
           <a href="/signup" className="text-blue-400 hover:underline">
