@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Header from '../components/Header';
-import { HomeIcon, UserIcon, Trash2, SettingsIcon } from 'lucide-react';
+import { HomeIcon, UserIcon, Trash2, SettingsIcon, LogOut } from 'lucide-react';
 
 export const MyPosts = () => {
   useEffect(() => {
@@ -14,7 +14,8 @@ export const MyPosts = () => {
         icons={[
           { icon: HomeIcon, link: '/home' },
           { icon: Trash2, link: '/deleted' },
-          { icon: SettingsIcon, link: '/account-setting' }
+          { icon: SettingsIcon, link: '/account-setting' },
+          { icon: LogOut, link: '/login' }
         ]}
       />
     </div>

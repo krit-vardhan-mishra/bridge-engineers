@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react';
+import { LogOut, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
@@ -17,9 +17,14 @@ export const Header = ({ title, icons = [], className }) => {
                 {icons.map(({ icon: Icon, link }, index) => (
                     <Link to={link} key={index}>
                         <div
-                            className={`group p-2 rounded-full transition duration-200 cursor-pointer ${
-                                Icon === Trash2 ? 'hover:bg-red-500/50' : 'hover:bg-white/10'
-                            }`}
+                            className={clsx(
+                                `group p-2 rounded-full transition duration-200 cursor-pointer`,
+                                {
+                                    'hover:bg-red-500/50': Icon === Trash2,
+                                    'hover:bg-red-500/80': Icon === LogOut,
+                                    'hover:bg-white/10': Icon !== Trash2 && Icon !== LogOut 
+                                }
+                            )}
                         >
                             <Icon className="text-white w-6 h-6 transform transition-transform duration-200 group-hover:scale-110" />
                         </div>

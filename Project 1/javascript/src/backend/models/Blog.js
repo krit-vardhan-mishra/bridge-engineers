@@ -4,7 +4,6 @@ class Blog {
     this.title = title || '';
     this.content = content || '';
     this.author = author || '';
-    this.createdAt = new Date();
   }
 
   getTitle() {
@@ -55,17 +54,12 @@ class Blog {
     this.id = id;
   }
 
-  getCreatedAt() {
-    return this.createdAt;
-  }
-
   toJSON() {
     return {
       id: this.id,
       title: this.title,
       content: this.content,
-      author: this.author,
-      createdAt: this.createdAt
+      author: this.author
     };
   }
 }
