@@ -1,4 +1,5 @@
 export const EditPost = () => {
+
   return (
     <div className="text-white">
       <h2 className="text-lg font-bold mb-4">Update Post</h2>

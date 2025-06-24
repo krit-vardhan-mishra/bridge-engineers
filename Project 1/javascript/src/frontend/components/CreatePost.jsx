@@ -1,9 +1,4 @@
-import { useEffect } from "react";
-
 export const CreatePost = () => {
-  useEffect(() => {
-    document.title = "Create Post";
-  })
 
   return (
     <div className="text-white">

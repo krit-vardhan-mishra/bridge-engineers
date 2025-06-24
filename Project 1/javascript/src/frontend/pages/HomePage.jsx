@@ -14,9 +14,16 @@ export const HomePage = () => {
   const [userName, setUserName] = useState('Krit');
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [isEditPostOpen, setIsEditPostOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(getCurrentDateTime());
 
   useEffect(() => {
-    document.title = "Home - Blog Web App";
+    if (isEditPostOpen) {
+      document.title = "Edit Post";
+    } else if (isCreatePostOpen) {
+      document.title = "Create Post";
+    } else {
+      document.title = "Home - Blog Web App";
+    }
     setShowBanner(true);
 
     const currentUser = getCurrentUser();
@@ -27,15 +34,15 @@ export const HomePage = () => {
     setUserName(name);
 
     const interval = setInterval(() => {
-      const updateGreeting = getTimeBasedGreeting();
-      setGreeting(updateGreeting);
-    }, 60000);
+      setGreeting(getTimeBasedGreeting());
+      setCurrentTime(getCurrentDateTime());
+    }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isEditPostOpen, isCreatePostOpen]);
 
   const handleEditPost = () => {
-    console.log('Edit post clicked'); // Debug log
+    console.log('Edit post clicked');
     setIsEditPostOpen(true);
   };
 
@@ -50,7 +57,7 @@ export const HomePage = () => {
             {greeting}, {userName}...!
           </h1>
           <p className="text-gray-300 text-lg">
-            {getCurrentDateTime()}
+            {currentTime}
           </p>
           <div className="h-1 w-full bg-blue-500 rounded-full mt-3"></div>
         </div>

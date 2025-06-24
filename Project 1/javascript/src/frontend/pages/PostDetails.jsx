@@ -1,11 +1,7 @@
 import { motion } from 'framer-motion';
 import { Pencil } from 'lucide-react';
-import { useEffect } from 'react';
 
 export const PostDetails = ({ title, content, author, onEdit }) => {
-  useEffect(() => {
-    document.title = "Edit Post";
-  })
 
   const handleEditClick = (e) => {
     e.preventDefault();
