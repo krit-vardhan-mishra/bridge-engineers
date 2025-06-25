@@ -2,7 +2,13 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const QuickStatsModal = ({ isOpen, onClose }) => {
+const colorMap = {
+  'Your Blogs': 'text-blue-400',
+  'Total Views': 'text-green-400',
+  'Last Updated': 'text-purple-400',
+};
+
+const QuickStatsModal = ({ isOpen, onClose, stats = [] }) => {
   if (!isOpen) return null;
 
   return (
@@ -33,38 +39,20 @@ const QuickStatsModal = ({ isOpen, onClose }) => {
             <h2 className="text-white text-2xl font-bold mb-6">Quick Stats</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Your Blogs */}
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="bg-[#2A2E36] rounded-lg p-4 text-center hover:border-2 transition-all duration-100"
-              >
-                <h3 className="text-white font-semibold mb-2">Your Blogs</h3>
-                <p className="text-2xl font-bold text-blue-400">0</p>
-                <p className="text-gray-400 text-sm">Published posts</p>
-              </motion.div>
-
-              {/* Total Views */}
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="bg-[#2A2E36] rounded-lg p-4 text-center hover:border-2 transition-all duration-100"
-              >
-                <h3 className="text-white font-semibold mb-2">Total Views</h3>
-                <p className="text-2xl font-bold text-green-400">0</p>
-                <p className="text-gray-400 text-sm">Page views</p>
-              </motion.div>
-
-              {/* Last Updated */}
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="bg-[#2A2E36] rounded-lg p-4 text-center hover:border-2 transition-all duration-100"
-              >
-                <h3 className="text-white font-semibold mb-2">Last Updated</h3>
-                <p className="text-2xl font-bold text-purple-400">-</p>
-                <p className="text-gray-400 text-sm">Recent activity</p>
-              </motion.div>
+              {stats.map(({ title, count, subtitle }, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-[#2A2E36] rounded-lg p-4 text-center hover:border-2 transition-all duration-100"
+                >
+                  <h3 className="text-white font-semibold mb-2">{title}</h3>
+                  <p className={`text-2xl font-bold ${colorMap[title] || 'text-gray-300'}`}>
+                    {count || count === 0 ? count : '-'}
+                  </p>
+                  <p className="text-gray-400 text-sm">{subtitle}</p>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
         </motion.div>
