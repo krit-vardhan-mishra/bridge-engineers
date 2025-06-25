@@ -110,6 +110,12 @@ export const HomePage = () => {
           <p className="text-gray-300 text-lg">
             {currentTime}
           </p>
+          { /* User Name and Age */}
+          <div className="flex items-center py-2 rounded-md space-x-4">
+            <h2 className="text-2xl font-bold text-white">Kirti Vardhan Mishra</h2>
+            <h2 className="text-xl font-bold text-white">( Age: 21 )</h2>
+          </div>
+
           <div className="h-1 w-full bg-blue-500 rounded-full mt-3"></div>
         </div>
 
@@ -164,7 +170,7 @@ export const HomePage = () => {
         isOpen={isCreatePostOpen}
         onClose={() => setIsCreatePostOpen(false)}
         onPostSuccess={handlePostCreationSuccess}
-        />
+      />
 
       {/* Edit Post Modal */}
       <EditPostModal

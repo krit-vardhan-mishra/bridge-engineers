@@ -1,28 +1,30 @@
-import axios from 'axios';
-
-const API_BASE = process.env.REACT_APP_API_URL || 'https://api.example.com';
-
-const withAuth = () => {
-  const token = localStorage.getItem('token');
-  return { headers: { Authorization: `Bearer ${token}` } };
+export const getCurrentUser = () => {
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
 };
 
-export const fetchPosts = async () => {
-  const { data } = await axios.get(`${API_BASE}/posts`, withAuth());
-  return data;
+export const login = async (email, password) => {
+  // Simulate user login
+  const fakeUser = { id: 1, name: 'John Doe', email };
+  const fakeToken = 'mock-token';
+
+  localStorage.setItem('user', JSON.stringify(fakeUser));
+  localStorage.setItem('token', fakeToken);
+
+  return { token: fakeToken, user: fakeUser };
 };
 
-export const createPost = async (postPayload) => {
-  const { data } = await axios.post(`${API_BASE}/posts`, postPayload, withAuth());
-  return data;
+export const register = async (first, last, email, pass) => {
+  const fakeUser = { id: 2, name: `${first} ${last}`, email };
+  const fakeToken = 'mock-token';
+
+  localStorage.setItem('user', JSON.stringify(fakeUser));
+  localStorage.setItem('token', fakeToken);
+
+  return { token: fakeToken, user: fakeUser };
 };
 
-export const updatePost = async (id, postPayload) => {
-  const { data } = await axios.put(`${API_BASE}/posts/${id}`, postPayload, withAuth());
-  return data;
-};
-
-export const deletePost = async (id) => {
-  const { data } = await axios.delete(`${API_BASE}/posts/${id}`, withAuth());
-  return data;
+export const logout = () => {
+  localStorage.removeItem('user');
+  localStorage.removeItem('token');
 };

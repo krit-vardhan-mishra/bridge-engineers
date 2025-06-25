@@ -1,29 +1,27 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import LoginPage from '../pages/LoginPage';
 import SignupPage from '../pages/SignupPage';
-import HomePage from '../pages/HomePage';
+import LoginPage from '../pages/LoginPage';
+import LandingPage from '../pages/LandingPage';
+import { HomePage } from '../pages/HomePage';
 import MyPosts from '../pages/MyPosts';
+import DeletedBlogs from '../pages/DeletedBlogs';
 import AccountSetting from '../pages/AccountSetting';
-import PrivateRoute from './PrivateRoute';
+import NotFound from '../pages/NotFound';
 
-const AppRoutes = () => (
-  <Routes>
-    {/* Public */}
-    <Route path="/login" element={<LoginPage />} />
-    <Route path="/signup" element={<SignupPage />} />
-
-    {/* Protected */}
-    <Route element={<PrivateRoute />}>
+const AppRoutes = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
       <Route path="/home" element={<HomePage />} />
       <Route path="/your-posts" element={<MyPosts />} />
+      <Route path="/deleted" element={<DeletedBlogs />} />
       <Route path="/account-setting" element={<AccountSetting />} />
-      {/* add more protected here */}
-    </Route>
-
-    {/* Fallback */}
-    <Route path="*" element={<LoginPage />} />
-  </Routes>
-);
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 export default AppRoutes;
