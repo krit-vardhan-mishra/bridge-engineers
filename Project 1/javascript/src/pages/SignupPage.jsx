@@ -2,7 +2,7 @@ import FeaturesSidebar from "../components/FeaturesSidebar";
 import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
-import { Button } from "../components/ui/button";
+import { Button } from '../components/ui/Button';
 import { SignupPageSkeleton } from "../skeleton/pages/SignupPageSkeleton";
 import FormGroup from "../components/form/FormGroup";
 

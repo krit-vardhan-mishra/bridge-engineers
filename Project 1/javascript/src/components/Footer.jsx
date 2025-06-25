@@ -18,7 +18,7 @@ export const Footer = ({ isLoading = false }) => {
           {/* Branding */}
           <div>
             <h2 className="flex text-xl font-bold mb-2">
-              <NotebookPen className="me-2" /> BlogSphere
+              <NotebookPen className="me-2" /><a href="/home">BlogSphere</a>
             </h2>
             <p className="text-sm text-gray-300">
               A place to explore stories, tutorials, and ideas from tech enthusiasts.

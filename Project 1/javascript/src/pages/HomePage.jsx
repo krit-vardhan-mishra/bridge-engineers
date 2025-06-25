@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { HomeIcon, UserIcon, SettingsIcon, Plus } from 'lucide-react';
 import NotifyBanner from '../components/ui/NotifyBanner';
