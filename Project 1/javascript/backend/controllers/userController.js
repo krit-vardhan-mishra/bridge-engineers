@@ -1,6 +1,8 @@
-const { BlogApp } = require('../models/BlogApp'); 
+// backend/controllers/userController.js
+import { BlogApp } from '../models/models.js'; // Import BlogApp from models.js
 
-let appInstance = new BlogApp();
+let appInstance = new BlogApp(); // Renamed to avoid confusion with the exported 'app'
+
 
 /**
  * Allows the server to set the fully initialized BlogApp instance.
@@ -63,12 +65,12 @@ function getUsersWithoutBlogs() {
   return appInstance.getUsersWithoutBlogs();
 }
 
-module.exports = {
+export {
   createUser,
   getAllUsers,
   getUserById,
   getUsersWithBlogs,
   getUsersWithoutBlogs,
-  app: appInstance,
-  setApp
+  appInstance as app, // Export the appInstance as 'app'
+  setApp // Export the setter function
 };

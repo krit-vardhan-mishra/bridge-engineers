@@ -1,9 +1,14 @@
-import apiCall from './apiService';
+// src/api/authService.js
+// This service simulates authentication as the backend does not have a full auth system.
+// In a real application, these functions would make API calls to your authentication endpoints.
 
+import apiCall from './apiService.js';
+
+// Mock users for frontend simulation. In a real app, users would be managed by a database.
 const MOCK_USERS_DATA = [
-    { id: 1, firstName: "Alice", lastName: "Smith", email: "alice@example.com", password: "password123", age: 25 },
-    { id: 2, firstName: "Bob", lastName: "Johnson", email: "bob@example.com", password: "password123", age: 30 },
-    { id: 3, firstName: "Charlie", lastName: "Brown", email: "charlie@example.com", password: "password123", age: 12 } // Charlie is under 13
+    { id: 1, firstName: "Alice", lastName: "Smith", email: "alice@example.com", password: "Password@123", age: 25 },
+    { id: 2, firstName: "Bob", lastName: "Johnson", email: "bob@example.com", password: "Password@123", age: 30 },
+    { id: 3, firstName: "Charlie", lastName: "Brown", email: "charlie@example.com", password: "Password@123", age: 12 } // Charlie is under 13
 ];
 
 // Helper to generate a mock token
@@ -21,15 +26,15 @@ const generateMockToken = (user) => {
  * @throws {Error} If login fails.
  */
 export const login = async (email, password) => {
-    // Simulate API call for login
     const user = MOCK_USERS_DATA.find(u => u.email === email && u.password === password);
 
     if (user) {
         const token = generateMockToken(user);
-        // Store token and user data in local storage
+        // Add a 'name' property for convenience in components like HomePage
+        const userWithFullName = { ...user, name: `${user.firstName} ${user.lastName}` };
         localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        return { token, user };
+        localStorage.setItem('user', JSON.stringify(userWithFullName));
+        return { token, user: userWithFullName };
     } else {
         throw new Error('Invalid email or password');
     }
@@ -46,24 +51,21 @@ export const login = async (email, password) => {
  * @throws {Error} If registration fails.
  */
 export const register = async (first, last, email, pass) => {
-    // In a real app, you would send this to the backend:
-    // const newUserFromBackend = await apiCall('/register', 'POST', { firstName: first, lastName: last, email, password: pass });
-
-    // Simulate adding a new user to our mock data
     const newUser = {
         id: MOCK_USERS_DATA.length + 1, // Simple ID generation
         firstName: first,
         lastName: last,
         email: email,
         password: pass, // In a real app, NEVER store plain passwords!
-        age: 20 // Default age for new registrations, can be adjusted
+        age: 20 // Default age for new registrations
     };
-    MOCK_USERS_DATA.push(newUser); // Add to mock users array
+    MOCK_USERS_DATA.push(newUser);
 
     const token = generateMockToken(newUser);
+    const newUserWithFullName = { ...newUser, name: `${newUser.firstName} ${newUser.lastName}` };
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(newUser));
-    return { token, user: newUser };
+    localStorage.setItem('user', JSON.stringify(newUserWithFullName));
+    return { token, user: newUserWithFullName };
 };
 
 /**

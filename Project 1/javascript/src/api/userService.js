@@ -1,4 +1,5 @@
-import apiCall from './apiService';
+// src/api/userService.js
+import apiCall from './apiService.js'; // Ensure .js extension
 
 /**
  * Fetches all users from the backend.
