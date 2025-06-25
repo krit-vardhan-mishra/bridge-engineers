@@ -9,8 +9,10 @@ import Footer from '../components/Footer';
 import HomePageSkeleton from '../skeleton/pages/HomePageSkeleton';
 import CreatePostModal from '../components/ui/modals/CreatePostModal';
 import EditPostModal from '../components/ui/modals/EditPostModal';
+import QuickStatsModal from '../components/ui/modals/QuickStatsModal';
 
 export const HomePage = () => {
+  const [isQuickStatsOpen, setIsQuickStatsOpen] = useState(false);
   const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
   const [showNotificationBanner, setShowNotificationBanner] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -134,23 +136,21 @@ export const HomePage = () => {
 
         {/* Quick Stats or Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="bg-[#2A2E36] rounded-lg p-4 text-center hover:border-2 transition-all duration-100">
-            <h3 className="text-white font-semibold mb-2">Your Blogs</h3>
-            <p className="text-2xl font-bold text-blue-400">0</p>
-            <p className="text-gray-400 text-sm">Published posts</p>
-          </motion.div>
+          <div className="text-right mb-4">
+            <button
+              onClick={() => setIsQuickStatsOpen(true)}
+              className="text-blue-400 hover:text-white underline text-sm"
+            >
+              View All Stats
+            </button>
+          </div>
 
-          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="bg-[#2A2E36] rounded-lg p-4 text-center hover:border-2 transition-all duration-100">
-            <h3 className="text-white font-semibold mb-2">Total Views</h3>
-            <p className="text-2xl font-bold text-green-400">0</p>
-            <p className="text-gray-400 text-sm">Page views</p>
-          </motion.div>
+          <QuickStatsModal
+            isOpen={isQuickStatsOpen}
+            onClose={() => setIsQuickStatsOpen(false)}
+          />
 
-          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="bg-[#2A2E36] rounded-lg p-4 text-center hover:border-2 transition-all duration-100">
-            <h3 className="text-white font-semibold mb-2">Last Updated</h3>
-            <p className="text-2xl font-bold text-purple-400">-</p>
-            <p className="text-gray-400 text-sm">Recent activity</p>
-          </motion.div>
+
         </div>
 
         <PostDetails title={'Hunter'} content={'sahfhuhafh sauidfhisafkjdkj usahfiahfjopajfdsnxzia fusdhifcaiushfiuhsa dfhuehsidfnkajs f9heudshfuasmf'} author={'Hunter K'} onEdit={handleEditPost} />
