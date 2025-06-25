@@ -1,7 +1,5 @@
-// blogController.js
-const { app } = require('./userController'); // Reusing the same BlogApp instance
+const { app } = require('./userController'); 
 
-// Create a new blog for a user
 function createBlog(reqBody) {
   const { userId, title, content } = reqBody;
 

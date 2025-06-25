@@ -10,13 +10,12 @@ import HomePageSkeleton from '../skeleton/pages/HomePageSkeleton';
 import CreatePostModal from '../components/ui/modals/CreatePostModal';
 import EditPostModal from '../components/ui/modals/EditPostModal';
 import QuickStatsModal from '../components/ui/modals/QuickStatsModal';
-import SingleStatModal from '../components/ui/modals/SingleStatModal'; // If you use one for individual cards
+import SingleStatModal from '../components/ui/modals/SingleStatModal';
 
 export const HomePage = () => {
   const [selectedStat, setSelectedStat] = useState(null);
   const [isStatModalOpen, setIsStatModalOpen] = useState(false);
   const [isAllStatsOpen, setIsAllStatsOpen] = useState(false);
-
   const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
   const [showNotificationBanner, setShowNotificationBanner] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
@@ -26,6 +25,27 @@ export const HomePage = () => {
   const [isEditPostOpen, setIsEditPostOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(getCurrentDateTime());
   const [isLoading, setIsLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const usersRes = await fetch('http://localhost:5000/api/users');
+        const blogsRes = await fetch('http://localhost:5000/api/blogs');
+        const usersData = await usersRes.json();
+        const blogsData = await blogsRes.json();
+
+        setUsers(usersData);
+        setBlogs(blogsData);
+      } catch (error) {
+        console.error("Failed to fetch users or blogs", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   const stats = [
     { title: 'Your Blogs', count: 0, subtitle: 'Published posts' },

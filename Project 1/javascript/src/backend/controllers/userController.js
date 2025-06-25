@@ -1,10 +1,6 @@
-// userController.js
 const { BlogApp } = require('./models');
 
-// Single instance of BlogApp for this app
 const app = new BlogApp();
-
-// Create a new user
 function createUser(reqBody) {
   const { name, age } = reqBody;
   if (!name || age === undefined) {
@@ -14,12 +10,10 @@ function createUser(reqBody) {
   return { success: true, user };
 }
 
-// Get all users
 function getAllUsers() {
   return app.getAllUsers();
 }
 
-// Get user by ID
 function getUserById(userId) {
   const user = app.getUserById(userId);
   if (!user) {
@@ -28,12 +22,10 @@ function getUserById(userId) {
   return { success: true, user };
 }
 
-// Get users with blogs
 function getUsersWithBlogs() {
   return app.getUsersWithBlogs();
 }
 
-// Get users without blogs
 function getUsersWithoutBlogs() {
   return app.getUsersWithoutBlogs();
 }
@@ -44,5 +36,5 @@ module.exports = {
   getUserById,
   getUsersWithBlogs,
   getUsersWithoutBlogs,
-  app // Exporting for use in blogController.js
+  app
 };

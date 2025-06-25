@@ -5,7 +5,6 @@ export class BrowserUser {
   }
 }
 
-// Greeting function based on time
 export const getTimeBasedGreeting = () => {
   const hour = new Date().getHours();
   if (hour >= 5 && hour < 12) return 'Good Morning';
@@ -14,7 +13,6 @@ export const getTimeBasedGreeting = () => {
   return 'Good Night';
 };
 
-// Enhanced greeting variation (optional)
 export const getEnhancedGreeting = () => {
   const hour = new Date().getHours();
   const greetings = {
@@ -33,7 +31,6 @@ export const getEnhancedGreeting = () => {
   return options[Math.floor(Math.random() * options.length)];
 };
 
-// Simulate getting a user from local/session storage
 export const getCurrentUser = () => {
   try {
     const localUser = localStorage.getItem('currentUser');
@@ -55,7 +52,6 @@ export const getCurrentUser = () => {
   }
 };
 
-// Set user in localStorage
 export const setCurrentUser = (name, age) => {
   try {
     const data = { name, age };
@@ -67,7 +63,6 @@ export const setCurrentUser = (name, age) => {
   }
 };
 
-// Get formatted current date and time
 export const getCurrentDateTime = () => {
   const now = new Date();
   return now.toLocaleString('en-US', {
