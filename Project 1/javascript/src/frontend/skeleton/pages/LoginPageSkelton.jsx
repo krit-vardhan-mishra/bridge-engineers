@@ -1,12 +1,12 @@
-import { SkeletonFeaturesSidebar } from "./SkeletonFeaturesSideBar";
+import { FeaturesSidebarSkeleton } from "../component/FeaturesSideBarSkeleton";
 
-export const SignupPageSkeleton = () => {
+export const LoginPageSkeleton = () => {
   return (
     <div className="flex h-screen bg-[#1C222A]">
-      <SkeletonFeaturesSidebar />
+      <FeaturesSidebarSkeleton />
 
       <div className="flex flex-col items-center justify-center w-1/2 bg-[#2A2E36]">
-        <div className="animate-pulse w-3/4 space-y-8">
+        <div className="w-3/4 space-y-8">
           {/* Welcome Text Skeleton */}
           <div className="text-center space-y-4">
             <div className="h-8 bg-gray-600 rounded w-3/4 mx-auto"></div>
@@ -40,13 +40,13 @@ export const SignupPageSkeleton = () => {
 
             {/* Remember Me Checkbox Skeleton */}
             <div className="flex justify-center space-x-3 items-center">
-              <div className="h-5 w-5 bg-[#1C222A] border border-gray-600 rounded-lg"></div>
+              <div className="h-5 w-5 bg-[#1C222A] border border-gray-600 rounded"></div>
               <div className="h-5 bg-gray-600 rounded w-24"></div>
             </div>
 
-            {/* Sign up Button Skeleton */}
+            {/* Login Button Skeleton */}
             <div className="flex justify-center mt-6">
-              <div className="h-12 bg-gray-600 rounded-xl w-28"></div>
+              <div className="h-10 bg-gray-600 rounded w-24"></div>
             </div>
           </div>
         </div>

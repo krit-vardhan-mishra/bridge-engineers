@@ -1,20 +1,27 @@
 import { useEffect, useState } from 'react';
-import { Trash2, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Trash2, HomeIcon } from 'lucide-react';
+import { motion } from 'framer-motion';
 import Header from '../components/Header';
 import DeletedPost from '../components/DeletedPost';
 import NotifyBanner from '../components/ui/NotifyBanner';
-import { Button } from '../components/ui/button';
 import Footer from '../components/Footer';
+import DeletedBlogsSkeleton from '../skeleton/pages/DeletedBlogsSkeleton';
+import PermanentDeleteDialog from '../components/ui/modals/PermanentDeleteDialog';
 
 export const DeletedBlogs = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogLoading, setIsDialogLoading] = useState(false);
   const [confirmationDeleteId, setConfirmationDeleteId] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
 
   useEffect(() => {
+    const timer = setInterval(() => {
+      setIsLoading(false);
+    }, 1500);
     document.title = "Deleted Blogs";
+    return () => setTimeout(timer);
   }, []);
 
   const [deletedPosts, setDeletedPosts] = useState([
@@ -34,6 +41,11 @@ export const DeletedBlogs = () => {
   const handleDelete = (id) => {
     setConfirmationDeleteId(id);
     setIsDialogOpen(true);
+    setIsDialogLoading(true);
+
+    setTimeout(() => {
+      setIsDialogLoading(false);
+    }, 800);
   };
 
   // Confirm deletion
@@ -48,15 +60,26 @@ export const DeletedBlogs = () => {
       setShowNotification(true);
       setConfirmationDeleteId(null);
       setIsDialogOpen(false);
+      setIsDialogLoading(false);
     }
   };
+
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+    setConfirmationDeleteId(null);
+    setIsDialogLoading(false);
+  };
+
+  if (isLoading) {
+    return <DeletedBlogsSkeleton />
+  }
 
   return (
     <div className="bg-[#1C222A] min-h-screen">
       <Header
         title="Your Deleted Posts"
         className="text-red-600"
-        icons={[{ icon: Trash2, link: '/delete' }]}
+        icons={[{ icon: HomeIcon, link: '/home' }, { icon: Trash2, link: '#' }]}
       />
 
       <motion.div
@@ -84,61 +107,12 @@ export const DeletedBlogs = () => {
       </div>
 
       {/* Confirm Delete Dialog */}
-      <AnimatePresence>
-        {isDialogOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => {
-              setIsDialogOpen(false);
-              setConfirmationDeleteId(null);
-            }}
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="bg-[#1C222A] p-6 rounded-lg shadow-lg w-full max-w-sm relative"
-              onClick={(e) => e.stopPropagation()} // Prevent backdrop click from closing when clicking inside
-            >
-              <button
-                onClick={() => {
-                  setIsDialogOpen(false);
-                  setConfirmationDeleteId(null);
-                }}
-                className="absolute top-2 right-2"
-              >
-                <X className="h-5 w-5 m-5 text-red-700 hover:text-red-500" />
-              </button>
-              <h2 className="text-white text-lg font-bold mb-4">
-                Do you want to delete this blog permanently?
-              </h2>
-              <form onSubmit={handleDeletionConfirm}>
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      setIsDialogOpen(false);
-                      setConfirmationDeleteId(null);
-                    }}
-                    className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="bg-red-700 hover:bg-red-500 text-white py-2 px-4 rounded-lg"
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <PermanentDeleteDialog
+        isOpen={isDialogOpen}
+        isLoading={isDialogLoading}
+        onClose={closeDialog}
+        onConfirm={handleDeletionConfirm}
+      />
 
       <Footer />
 

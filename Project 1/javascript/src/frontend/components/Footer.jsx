@@ -1,7 +1,11 @@
-import React from "react";
 import { Facebook, Twitter, Instagram, Github, NotebookPen } from "lucide-react";
+import FooterSkeleton from '../skeleton/component/FooterSkeleton';
 
-export const Footer = () => {
+export const Footer = ({isLoading = false}) => {
+  if (isLoading) {
+    <FooterSkeleton />
+  }
+
   return (
     <footer className="bg-[#1e1e2f] text-white py-8 px-4 mt-10">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -32,7 +36,7 @@ export const Footer = () => {
               <Facebook className="w-5 h-5 hover:text-blue-500" />
             </a>
             <a href="https://x.com/imkritvm/" target="_blank" rel="noreferrer">
-              <Twitter className="w-5 h-5 hover:text-blue-400" />
+              <Twitter className="w-5 h-5 hover:text-gray-700" />
             </a>
             <a href="https://www.instagram.com/imkritvm/" target="_blank" rel="noreferrer">
               <Instagram className="w-5 h-5 hover:text-pink-500" />

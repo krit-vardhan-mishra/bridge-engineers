@@ -11,16 +11,12 @@ const LandingPage = () => {
 
     const [welcomeText, setWelcomeText] = useState('');
     const [actionText, setActionText] = useState('');
-
     const [showWelcomeCursor, setShowWelcomeCursor] = useState(true);
     const [startActionTyping, setStartActionTyping] = useState(false);
     const [showActionCursor, setShowActionCursor] = useState(true);
-
     const [skipped, setSkipped] = useState(false);
-
     const welcomeWord = useRef('Welcome to Blog App.');
     const actionWord = useRef('Login or Sign Up to continue.');
-
 
     const typewriterWelcome = useTypewriter({
         words: [welcomeWord.current],
@@ -80,7 +76,6 @@ const LandingPage = () => {
             }
         }
     }, [typewriterWelcome[0], typewriterAction[0], skipped, startActionTyping]);
-
 
     return (
         <div className='flex flex-col items-center justify-center h-screen bg-[#1C222A] gap-4'>

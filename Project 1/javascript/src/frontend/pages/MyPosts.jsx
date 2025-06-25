@@ -1,20 +1,25 @@
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
-import { HomeIcon, Trash2, SettingsIcon, LogOut, Plus, X } from 'lucide-react'; // Fix: Added Plus and X imports
-import { motion, AnimatePresence } from 'framer-motion';
-import CreatePost from '../components/CreatePost';
+import { HomeIcon, Trash2, SettingsIcon, LogOut, Plus, X } from 'lucide-react'; 
+import { motion } from 'framer-motion';
 import PostDetails from '../components/PostDetails';
-import EditPost from '../components/EditPost';
 import NotifyBanner from '../components/ui/NotifyBanner';
 import Footer from '../components/Footer';
+import MyPostsSkeleton from '../skeleton/pages/MyPostsSkeleton';
+import CreatePostModal from '../components/ui/modals/CreatePostModal';
+import EditPostModal from '../components/ui/modals/EditPostModal';
 
 export const MyPosts = () => {
   const [showNotificationBanner, setShowNotificationBanner] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [isEditPostOpen, setIsEditPostOpen] = useState(false);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200);
     if (isEditPostOpen) {
       document.title = "Edit Post";
     } else if (isCreatePostOpen) {
@@ -22,6 +27,8 @@ export const MyPosts = () => {
     } else {
       document.title = "Your Blogs";
     }
+
+    return () => clearTimeout(timer);
   }, [isEditPostOpen, isCreatePostOpen]);
 
   useEffect(() => {
@@ -50,6 +57,10 @@ export const MyPosts = () => {
     setShowNotificationBanner(true);
     setIsEditPostOpen(false);
   };
+
+  if (isLoading) {
+    return <MyPostsSkeleton />
+  }
 
   return (
     <div className="bg-[#1C222A] min-h-screen">
@@ -96,70 +107,21 @@ export const MyPosts = () => {
         <Plus className="w-6 h-6" />
       </div>
 
-      {/* Create Post Modal */}
-      <AnimatePresence>
-        {isCreatePostOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => setIsCreatePostOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="bg-[#1C222A] p-6 rounded-lg shadow-lg w-full max-w-md relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setIsCreatePostOpen(false)}
-                className="absolute top-2 right-2 text-gray-400 hover:text-white"
-              >
-                <X className="h-5 w-5 m-5 text-red-700 hover:text-red-500" />
-              </button>
-              <CreatePost onPostSuccess={handlePostCreationSuccess} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <CreatePostModal isOpen={isCreatePostOpen}
+        onClose={() => setIsCreatePostOpen(false)}
+        onPostSuccess={handlePostCreationSuccess} />
 
-      {/* Edit Post Modal */}
-      <AnimatePresence>
-        {isEditPostOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => setIsEditPostOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="bg-[#1C222A] p-6 rounded-lg shadow-lg w-full max-w-md relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setIsEditPostOpen(false)}
-                className="absolute top-2 right-2 text-red-500 hover:text-white"
-              >
-                <X className="h-5 w-5 m-5" />
-              </button>
-              <EditPost onUpdateSuccess={handlePostUpdateSuccess} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <EditPostModal
+        isOpen={isEditPostOpen}
+        onClose={() => setIsEditPostOpen(false)}
+        onUpdateSuccess={handlePostUpdateSuccess} />
 
       <Footer />
 
       {showNotificationBanner && notificationMessage && (
         <NotifyBanner
           message={notificationMessage}
-          onClose={() => setShowNotificationBanner(false)} 
+          onClose={() => setShowNotificationBanner(false)}
         />
       )}
     </div>

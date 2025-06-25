@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Undo2, Trash2 } from 'lucide-react';
 import NotifyBanner from './ui/NotifyBanner';
 import { motion } from 'framer-motion';
+import DeletedPostSkeleton from '../skeleton/component/DeletedPostSkeleton';
 
-export const DeletedPost = ({ title, content, author, onRestore, onDelete }) => {
+export const DeletedPost = ({ title, content, author, onRestore, onDelete, isLoading = false }) => {
+  if (isLoading) {
+    return <DeletedPostSkeleton />
+  }
   const [showNotificationBanner, setShowNotificationBanner] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
 

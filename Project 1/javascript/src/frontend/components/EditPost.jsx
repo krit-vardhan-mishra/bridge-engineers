@@ -1,6 +1,11 @@
 import { useState } from "react";
+import EditPostSkeleton from '../skeleton/component/EditPostSkeleton';
 
-export const EditPost = ({ onUpdateSuccess }) => {
+export const EditPost = ({ onUpdateSuccess, isLoading = false }) => {
+  if (isLoading) {
+    return <EditPostSkeleton />
+  }
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 

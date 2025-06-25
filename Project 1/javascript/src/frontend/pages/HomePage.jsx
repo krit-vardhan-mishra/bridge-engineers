@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { HomeIcon, UserIcon, SettingsIcon, Plus, X } from 'lucide-react';
 import NotifyBanner from '../components/ui/NotifyBanner';
-import { getTimeBasedGreeting, getCurrentDateTime, getCurrentUser } from '../utils/greetingUtils';
-import { motion, AnimatePresence } from 'framer-motion';
-import CreatePost from '../components/CreatePost';
+import { getTimeBasedGreeting, getCurrentDateTime, getCurrentUser } from '../utils/utilityFunctions';
+import { motion } from 'framer-motion';
 import PostDetails from '../components/PostDetails';
-import EditPost from '../components/EditPost';
 import Footer from '../components/Footer';
+import HomePageSkeleton from '../skeleton/pages/HomePageSkeleton';
+import CreatePostModal from '../components/ui/modals/CreatePostModal';
+import EditPostModal from '../components/ui/modals/EditPostModal';
 
 export const HomePage = () => {
   const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
@@ -18,8 +19,13 @@ export const HomePage = () => {
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [isEditPostOpen, setIsEditPostOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(getCurrentDateTime());
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const loadingTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
     if (isEditPostOpen) {
       document.title = "Edit Post";
     } else if (isCreatePostOpen) {
@@ -40,7 +46,10 @@ export const HomePage = () => {
       setCurrentTime(getCurrentDateTime());
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(loadingTimer);
+      clearInterval(interval);
+    }
   }, [isEditPostOpen, isCreatePostOpen]);
 
   useEffect(() => {
@@ -82,6 +91,10 @@ export const HomePage = () => {
     setNotificationMessage(message);
     setShowNotificationBanner(true);
     setIsEditPostOpen(false);
+  }
+
+  if (isLoading) {
+    return <HomePageSkeleton />
   }
 
   return (
@@ -147,62 +160,18 @@ export const HomePage = () => {
       </div>
 
       {/* Create Post Modal */}
-      <AnimatePresence>
-        {isCreatePostOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => setIsCreatePostOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="bg-[#1C222A] p-6 rounded-lg shadow-lg w-full max-w-md relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setIsCreatePostOpen(false)}
-                className="absolute top-2 right-2"
-              >
-                <X className="h-5 w-5 m-5 text-red-700 hover:text-red-500" />
-              </button>
-              <CreatePost onPostSuccess={handlePostCreationSuccess} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <CreatePostModal
+        isOpen={isCreatePostOpen}
+        onClose={() => setIsCreatePostOpen(false)}
+        onPostSuccess={handlePostCreationSuccess}
+        />
 
       {/* Edit Post Modal */}
-      <AnimatePresence>
-        {isEditPostOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => setIsEditPostOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="bg-[#1C222A] p-6 rounded-lg shadow-lg w-full max-w-md relative"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setIsEditPostOpen(false)}
-                className="absolute top-2 right-2 "
-              >
-                <X className="h-5 w-5 m-5 text-red-700 hover:text-red-500" />
-              </button>
-              <EditPost onUpdateSuccess={handlePostUpdateSuccess} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <EditPostModal
+        isOpen={isEditPostOpen}
+        onClose={() => setIsEditPostOpen(false)}
+        onUpdateSuccess={handlePostUpdateSuccess}
+      />
 
       <Footer />
 
@@ -215,8 +184,8 @@ export const HomePage = () => {
 
       {showNotificationBanner && notificationMessage && (
         <NotifyBanner
-        message={notificationMessage}
-        onClose={() => setShowNotificationBanner(false)} />
+          message={notificationMessage}
+          onClose={() => setShowNotificationBanner(false)} />
       )}
     </div>
   );

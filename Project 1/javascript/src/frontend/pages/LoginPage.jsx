@@ -3,7 +3,7 @@ import FeaturesSidebar from "../components/FeaturesSidebar";
 import { Button } from "../components/ui/button";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
-import { LoginPageSkeleton } from "./skeleton/LoginPageSkelton";
+import { LoginPageSkeleton } from "../skeleton/pages/LoginPageSkelton";
 
 export const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -49,7 +49,6 @@ export const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      // Replace with actual auth logic
       window.location.href = "/home";
     }
   };

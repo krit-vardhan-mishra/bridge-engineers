@@ -1,15 +1,18 @@
 import { LogOut, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
+import HeaderSkeleton from '../skeleton/component/HeaderSkeleton';
 
-export const Header = ({ title, icons = [], className }) => {
+export const Header = ({ title, icons = [], className, isLoading = false }) => {
+    if (isLoading) {
+        return <HeaderSkeleton />
+    }
+
     return (
         <div
             className={clsx(
                 'w-full h-[70px] bg-gray-800/80 backdrop-blur-md shadow-md flex items-center justify-between px-4 border-b border-gray-700',
-                className
-            )}
-        >
+                className)} >
             <h1 className="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold transition-transform duration-300">
                 {title}
             </h1>

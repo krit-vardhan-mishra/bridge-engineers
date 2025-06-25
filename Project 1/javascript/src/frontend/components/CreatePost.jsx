@@ -1,6 +1,11 @@
 import { useState } from "react";
+import { CreatePostSkeleton } from "../skeleton/component/CreatePostSkeleton";
 
-export const CreatePost = ({ onPostSuccess }) => {
+export const CreatePost = ({ onPostSuccess, isLoading = false }) => {
+  if (isLoading) {
+    return <CreatePostSkeleton />
+  }
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 

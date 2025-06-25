@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { Pencil } from 'lucide-react';
 
 export const PostDetails = ({ title, content, author, onEdit }) => {
-
   const handleEditClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
