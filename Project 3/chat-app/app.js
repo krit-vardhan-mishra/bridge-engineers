@@ -1,26 +1,26 @@
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const mongoose = require('mongoose');
+import express from 'express';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import { set, connect, Schema, model } from 'mongoose';
 
 // Suppress Mongoose strictQuery warning
-mongoose.set('strictQuery', false);
+set('strictQuery', false);
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
+const server = createServer(app);
+const io = new Server(server);
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/chatapp', { useNewUrlParser: true, useUnifiedTopology: true })
+connect('mongodb://localhost:27017/chatapp', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-const messageSchema = new mongoose.Schema({
+const messageSchema = new Schema({
   user: String,
   message: String,
   timestamp: { type: Date, default: Date.now }
 });
-const Message = mongoose.model('Message', messageSchema);
+const Message = model('Message', messageSchema);
 
 app.use(express.static('public'));
 
