@@ -19,7 +19,7 @@ export const MyPosts = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1200);
+    }, 1500);
     if (isEditPostOpen) {
       document.title = "Edit Post";
     } else if (isCreatePostOpen) {

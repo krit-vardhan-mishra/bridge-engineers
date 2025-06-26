@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import Header from '../components/Header.jsx'; // Added .jsx extension
+import Header from '../components/Header.jsx';
 import { HomeIcon, UserIcon, SettingsIcon, Plus } from 'lucide-react';
-import NotifyBanner from '../components/ui/NotifyBanner.jsx'; // Added .jsx extension
-import { getTimeBasedGreeting, getCurrentDateTime } from '../utils/utilityFunctions.js'; // Added .js extension
+import NotifyBanner from '../components/ui/NotifyBanner.jsx';
+import { getTimeBasedGreeting, getCurrentDateTime } from '../utils/utilityFunctions.js';
 import { motion } from 'framer-motion';
-import PostDetails from '../components/PostDetails.jsx'; // Added .jsx extension
-import Footer from '../components/Footer.jsx'; // Added .jsx extension
-import HomePageSkeleton from '../skeleton/pages/HomePageSkeleton.jsx'; // Added .jsx extension
-import CreatePostModal from '../components/ui/modals/CreatePostModal.jsx'; // Added .jsx extension
-import EditPostModal from '../components/ui/modals/EditPostModal.jsx'; // Added .jsx extension
-import QuickStatsModal from '../components/ui/modals/QuickStatsModal.jsx'; // Added .jsx extension
-import SingleStatModal from '../components/ui/modals/SingleStatModal.jsx'; // Added .jsx extension
-import useAuth from '../hooks/useAuth.js'; // Already had .js, kept as is
-import * as blogService from '../api/blogService.js'; // Already had .js, kept as is
+import PostDetails from '../components/PostDetails.jsx';
+import Footer from '../components/Footer.jsx';
+import HomePageSkeleton from '../skeleton/pages/HomePageSkeleton.jsx'; 
+import CreatePostModal from '../components/ui/modals/CreatePostModal.jsx'; 
+import EditPostModal from '../components/ui/modals/EditPostModal.jsx'; 
+import QuickStatsModal from '../components/ui/modals/QuickStatsModal.jsx'; 
+import SingleStatModal from '../components/ui/modals/SingleStatModal.jsx'; 
+import useAuth from '../hooks/useAuth.js'; 
+import * as blogService from '../api/blogService.js';
 
 export const HomePage = () => {
-  const { user, token } = useAuth(); // Use the useAuth hook to get user and token
-
+  const { user, token } = useAuth();
   const [selectedStat, setSelectedStat] = useState(null);
   const [isStatModalOpen, setIsStatModalOpen] = useState(false);
   const [isAllStatsOpen, setIsAllStatsOpen] = useState(false);
@@ -24,36 +23,31 @@ export const HomePage = () => {
   const [showNotificationBanner, setShowNotificationBanner] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [greeting, setGreeting] = useState('');
-  const [displayedUserName, setDisplayedUserName] = useState('Guest'); // Renamed to avoid conflict
+  const [displayedUserName, setDisplayedUserName] = useState('Guest');
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [isEditPostOpen, setIsEditPostOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(getCurrentDateTime());
   const [isLoading, setIsLoading] = useState(true);
-  const [allBlogs, setAllBlogs] = useState([]); // Renamed from 'blogs' to avoid confusion with stats.count
-
-  // Fetch all blogs on component mount or when token changes
+  const [allBlogs, setAllBlogs] = useState([]); 
+  
   useEffect(() => {
     const fetchAllBlogsData = async () => {
       try {
         setIsLoading(true);
-        // Fetch all blogs using the service
         const blogsData = await blogService.fetchAllBlogs(token);
         setAllBlogs(blogsData);
       } catch (error) {
         console.error("Failed to fetch blogs", error);
-        // Optionally set an error state here to display to the user
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchAllBlogsData();
-  }, [token]); // Re-run if token changes (user logs in/out)
+  }, [token]);
 
-  // Update greeting and user name based on logged-in user
   useEffect(() => {
     setGreeting(getTimeBasedGreeting());
-    // Use user.name from the auth context, which now includes the full name
     setDisplayedUserName(user?.name || 'Guest');
 
     const interval = setInterval(() => {
@@ -61,7 +55,7 @@ export const HomePage = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [user]); // Re-run if user object changes
+  }, [user]); 
 
   // Dynamic document title
   useEffect(() => {
@@ -100,9 +94,8 @@ export const HomePage = () => {
 
   // Calculate stats based on fetched data
   const userBlogsCount = allBlogs.filter(blog => blog.userId === user?.id).length;
-  // Placeholder for total views and last updated - these would come from a real analytics system
-  const totalViews = 0; // This would be fetched from backend analytics
-  const lastUpdated = "N/A"; // This would be the timestamp of the latest user blog update
+  const totalViews = 0; 
+  const lastUpdated = "N/A";
 
   const stats = [
     { title: 'Your Blogs', count: userBlogsCount, subtitle: 'Published posts' },
@@ -122,14 +115,13 @@ export const HomePage = () => {
   };
 
   const handleEditPost = () => {
-    setIsEditPostOpen(true); // This would typically open a modal to edit a specific post
+    setIsEditPostOpen(true);
   };
 
   const handlePostCreationSuccess = (message) => {
     setNotificationMessage(message);
     setShowNotificationBanner(true);
     setIsCreatePostOpen(false);
-    // Re-fetch blogs after successful creation to update the list
     blogService.fetchAllBlogs(token).then(setAllBlogs).catch(err => console.error("Failed to refresh blogs:", err));
   };
 
@@ -137,7 +129,6 @@ export const HomePage = () => {
     setNotificationMessage(message);
     setShowNotificationBanner(true);
     setIsEditPostOpen(false);
-    // Re-fetch blogs after successful update to update the list
     blogService.fetchAllBlogs(token).then(setAllBlogs).catch(err => console.error("Failed to refresh blogs:", err));
   };
 
@@ -226,12 +217,10 @@ export const HomePage = () => {
             <div className="space-y-6">
                 {allBlogs.map((blog) => (
                     <PostDetails
-                        key={blog.id} // Ensure a unique key
+                        key={blog.id}
                         title={blog.title}
                         content={blog.content}
                         author={blog.author}
-                        // onEdit is passed, but actual editing happens in MyPosts
-                        // You might want to remove this if posts are read-only here
                         onEdit={handleEditPost}
                     />
                 ))}
