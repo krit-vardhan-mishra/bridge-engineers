@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url'; // Required for __dirname with ES Modules
 // Import controllers and models
 import { setApp, getAllUsers, getUserById, createUser, app as userControllerAppInstance } from './controllers/userController.js'; // Add .js extension
 import { getAllBlogs, getBlogById, createBlog, deleteBlog } from './controllers/blogController.js'; // Add .js extension
-import { BlogApp, User, Blog } from './models/BlogApp.js'; // Add .js extension
+import { BlogApp, User, Blog } from './models/models.js'; // Add .js extension
 
 // __dirname equivalent for ES Modules
 const __filename = fileURLToPath(import.meta.url);
