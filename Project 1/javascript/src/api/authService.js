@@ -1,9 +1,6 @@
 // src/api/authService.js
 // This service simulates authentication as the backend does not have a full auth system.
 // In a real application, these functions would make API calls to your authentication endpoints.
-
-import apiCall from './apiService.js';
-
 // Mock users for frontend simulation. In a real app, users would be managed by a database.
 const MOCK_USERS_DATA = [
     { id: 1, firstName: "Alice", lastName: "Smith", email: "alice@example.com", password: "Password@123", age: 25 },
