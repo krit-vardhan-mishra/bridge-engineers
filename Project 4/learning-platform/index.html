@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eLearning - Online Learning Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .user-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .course-item {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .course-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .course-item p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            background: white;
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            color: #333;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            color: #333;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .quiz-container {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .real-time-updates {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .update-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 eLearning Platform</h1>
+            <p>Grow your skills to advance your career path</p>
+            <div class="user-toggle">
+                <button class="toggle-btn active" onclick="switchMode('student')">Student View</button>
+                <button class="toggle-btn" onclick="switchMode('instructor')">Instructor View</button>
+            </div>
+        </div>
+
+        <!-- Student View -->
+        <div id="studentView">
+            <div class="card">
+                <h2><span class="icon">📚</span> Available Courses</h2>
+                <div class="course-grid" id="courseGrid">
+                    <!-- Courses will be loaded here -->
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">📊</span> My Progress</h2>
+                <div class="form-row">
+                    <input type="text" class="form-control" id="studentId" placeholder="Enter your Student ID">
+                    <input type="text" class="form-control" id="courseIdProgress" placeholder="Course ID">
+                    <input type="number" class="form-control" id="progressValue" placeholder="Progress %" min="0" max="100">
+                </div>
+                <button class="btn btn-primary" onclick="updateProgress()">Update Progress</button>
+                <div id="progressMessage" style="margin-top: 15px;"></div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">🧠</span> Take Quiz</h2>
+                <div id="quizContainer">
+                    <!-- Quiz content will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructor View -->
+        <div id="instructorView" class="hidden">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number" id="totalStudents">0</span>
+                    <span class="stat-label">Total Students</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="totalCourses">0</span>
+                    <span class="stat-label">Active Courses</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="avgProgress">0%</span>
+                    <span class="stat-label">Avg Progress</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">➕</span> Create New Course</h2>
+                <div class="form-row">
+                    <input type="text" class="form-control" id="courseTitle" placeholder="Course Title">
+                    <input type="text" class="form-control" id="courseDescription" placeholder="Course Description">
+                    <input type="text" class="form-control" id="courseInstructor" placeholder="Instructor Name">
+                </div>
+                <button class="btn btn-success" onclick="createCourse()">Create Course</button>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">❓</span> Create Quiz</h2>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="quizQuestion" placeholder="Quiz Question">
+                </div>
+                <div class="form-row">
+                    <input type="text" class="form-control" id="option1" placeholder="Option 1">
+                    <input type="text" class="form-control" id="option2" placeholder="Option 2">
+                    <input type="text" class="form-control" id="option3" placeholder="Option 3">
+                    <input type="text" class="form-control" id="option4" placeholder="Option 4">
+                </div>
+                <div class="form-row">
+                    <select class="form-control" id="correctAnswer">
+                        <option value="">Select Correct Answer</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                        <option value="4">Option 4</option>
+                    </select>
+                    <input type="text" class="form-control" id="quizCourseId" placeholder="Course ID">
+                </div>
+                <button class="btn btn-secondary" onclick="createQuiz()">Create Quiz</button>
+            </div>
+
+            <div class="card">
+                <h2><span class="icon">👥</span> Student Progress Overview</h2>
+                <div id="studentProgressList">
+                    <!-- Student progress will be displayed here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><span class="icon">🔴</span> Real-Time Updates</h2>
+            <div class="real-time-updates" id="realTimeUpdates">
+                <div class="update-item">Waiting for real-time updates...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        let currentMode = 'student';
+        let ws;
+        let courses = [];
+        let currentQuiz = null;
+
+        // Initialize WebSocket connection
+        function initWebSocket() {
+            ws = new WebSocket('ws://localhost:3000');
+            
+            ws.onopen = () => {
+                console.log('WebSocket Connected');
+                showNotification('Connected to real-time updates!', 'success');
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                addRealTimeUpdate(data);
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket Error:', error);
+                showNotification('Connection error. Real-time updates disabled.', 'error');
+            };
+            
+            ws.onclose = () => {
+                console.log('WebSocket Disconnected');
+                setTimeout(initWebSocket, 3000); // Reconnect after 3 seconds
+            };
+        }
+
+        // Switch between student and instructor views
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (mode === 'student') {
+                document.getElementById('studentView').classList.remove('hidden');
+                document.getElementById('instructorView').classList.add('hidden');
+                loadQuiz();
+            } else {
+                document.getElementById('studentView').classList.add('hidden');
+                document.getElementById('instructorView').classList.remove('hidden');
+                loadInstructorStats();
+                loadStudentProgress();
+            }
+        }
+
+        // Load courses
+        async function loadCourses() {
+            try {
+                const response = await fetch('http://localhost:3000/courses');
+                const data = await response.json();
+                courses = data.courses || [];
+                
+                const courseGrid = document.getElementById('courseGrid');
+                courseGrid.innerHTML = '';
+                
+                courses.forEach((course, index) => {
+                    const courseDiv = document.createElement('div');
+                    courseDiv.className = 'course-item';
+                    courseDiv.innerHTML = `
+                        <h3>${course.title || course}</h3>
+                        <p>${course.description || 'Learn the fundamentals and advance your skills'}</p>
+                        <p><strong>Instructor:</strong> ${course.instructor || 'Professional Instructor'}</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${Math.random() * 100}%"></div>
+                        </div>
+                    `;
+                    courseGrid.appendChild(courseDiv);
+                });
+                
+                document.getElementById('totalCourses').textContent = courses.length;
+            } catch (error) {
+                console.error('Error loading courses:', error);
+                showNotification('Error loading courses', 'error');
+            }
+        }
+
+        // Create new course
+        async function createCourse() {
+            const title = document.getElementById('courseTitle').value;
+            const description = document.getElementById('courseDescription').value;
+            const instructor = document.getElementById('courseInstructor').value;
+            
+            if (!title || !description || !instructor) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/courses', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, description, instructor })
+                });
+                
+                const data = await response.json();
+                showNotification('Course created successfully!', 'success');
+                
+                // Clear form
+                document.getElementById('courseTitle').value = '';
+                document.getElementById('courseDescription').value = '';
+                document.getElementById('courseInstructor').value = '';
+                
+                loadCourses();
+            } catch (error) {
+                console.error('Error creating course:', error);
+                showNotification('Error creating course', 'error');
+            }
+        }
+
+        // Update progress
+        async function updateProgress() {
+            const studentId = document.getElementById('studentId').value;
+            const courseId = document.getElementById('courseIdProgress').value;
+            const progress = document.getElementById('progressValue').value;
+            
+            if (!studentId || !courseId || !progress) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/progress', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId, courseId, progress: parseInt(progress) })
+                });
+                
+                const data = await response.json();
+                document.getElementById('progressMessage').innerHTML = `
+                    <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                        ${data.message}
+                    </div>
+                `;
+                showNotification('Progress updated successfully!', 'success');
+            } catch (error) {
+                console.error('Error updating progress:', error);
+                showNotification('Error updating progress', 'error');
+            }
+        }
+
+        // Load quiz
+        async function loadQuiz() {
+            try {
+                const response = await fetch('http://localhost:3000/quiz');
+                const data = await response.json();
+                
+                if (data.quiz) {
+                    currentQuiz = data.quiz;
+                    displayQuiz(data.quiz);
+                } else {
+                    document.getElementById('quizContainer').innerHTML = '<p>No quiz available at the moment.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading quiz:', error);
+                document.getElementById('quizContainer').innerHTML = '<p>Error loading quiz. Please try again later.</p>';
+            }
+        }
+
+        // Display quiz
+        function displayQuiz(quiz) {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = `
+                <div class="quiz-container">
+                    <div class="quiz-question">${quiz.question}</div>
+                    <div class="quiz-options">
+                        ${quiz.options.map((option, index) => `
+                            <div class="quiz-option" onclick="selectOption(${index})" data-index="${index}">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="btn btn-primary" onclick="submitQuiz()" style="margin-top: 20px;">Submit Answer</button>
+                </div>
+            `;
+        }
+
+        // Select quiz option
+        function selectOption(index) {
+            document.querySelectorAll('.quiz-option').forEach(option => option.classList.remove('selected'));
+            document.querySelector(`[data-index="${index}"]`).classList.add('selected');
+        }
+
+        // Submit quiz
+        function submitQuiz() {
+            const selected = document.querySelector('.quiz-option.selected');
+            if (!selected) {
+                showNotification('Please select an answer', 'error');
+                return;
+            }
+            
+            const selectedIndex = parseInt(selected.dataset.index);
+            const isCorrect = selectedIndex === currentQuiz.correctAnswer;
+            
+            showNotification(isCorrect ? 'Correct answer!' : 'Incorrect answer. Try again!', isCorrect ? 'success' : 'error');
+        }
+
+        // Create quiz
+        async function createQuiz() {
+            const question = document.getElementById('quizQuestion').value;
+            const options = [
+                document.getElementById('option1').value,
+                document.getElementById('option2').value,
+                document.getElementById('option3').value,
+                document.getElementById('option4').value
+            ];
+            const correctAnswer = parseInt(document.getElementById('correctAnswer').value) - 1;
+            const courseId = document.getElementById('quizCourseId').value;
+            
+            if (!question || options.some(opt => !opt) || correctAnswer === -1 || !courseId) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/quiz', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question, options, correctAnswer, courseId })
+                });
+                
+                const data = await response.json();
+                showNotification('Quiz created successfully!', 'success');
+                
+                // Clear form
+                document.getElementById('quizQuestion').value = '';
+                document.getElementById('option1').value = '';
+                document.getElementById('option2').value = '';
+                document.getElementById('option3').value = '';
+                document.getElementById('option4').value = '';
+                document.getElementById('correctAnswer').value = '';
+                document.getElementById('quizCourseId').value = '';
+            } catch (error) {
+                console.error('Error creating quiz:', error);
+                showNotification('Error creating quiz', 'error');
+            }
+        }
+
+        // Load instructor stats
+        async function loadInstructorStats() {
+            try {
+                const response = await fetch('http://localhost:3000/stats');
+                const data = await response.json();
+                
+                document.getElementById('totalStudents').textContent = data.totalStudents || 0;
+                document.getElementById('totalCourses').textContent = data.totalCourses || 0;
+                document.getElementById('avgProgress').textContent = (data.avgProgress || 0) + '%';
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load student progress
+        async function loadStudentProgress() {
+            try {
+                const response = await fetch('http://localhost:3000/all-progress');
+                const data = await response.json();
+                
+                const container = document.getElementById('studentProgressList');
+                container.innerHTML = '';
+                
+                if (data.progress && data.progress.length > 0) {
+                    data.progress.forEach(item => {
+                        const progressDiv = document.createElement('div');
+                        progressDiv.className = 'update-item';
+                        progressDiv.innerHTML = `
+                            <strong>Student ${item.studentId}</strong> - Course ${item.courseId} - Progress: ${item.progress}%
+                            <div class="progress-bar" style="margin-top: 10px;">
+                                <div class="progress-fill" style="width: ${item.progress}%"></div>
+                            </div>
+                        `;
+                        container.appendChild(progressDiv);
+                    });
+                } else {
+                    container.innerHTML = '<div class="update-item">No student progress data available.</div>';
+                }
+            } catch (error) {
+                console.error('Error loading student progress:', error);
+            }
+        }
+
+        // Add real-time update
+        function addRealTimeUpdate(data) {
+            const container = document.getElementById('realTimeUpdates');
+            const updateDiv = document.createElement('div');
+            updateDiv.className = 'update-item';
+            updateDiv.innerHTML = `
+                <strong>Real-time Update:</strong> Student ${data.studentId} updated progress to ${data.progress}% in Course ${data.courseId}
+                <small style="display: block; color: #666; margin-top: 5px;">${new Date().toLocaleTimeString()}</small>
+            `;
+            container.insertBefore(updateDiv, container.firstChild);
+            
+            // Keep only last 10 updates
+            while (container.children.length > 10) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.background = type === 'success' ? '#28a745' : '#dc3545';
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCourses();
+            loadQuiz();
+            initWebSocket();
+        });
+    </script>
+</body>
+</html>
