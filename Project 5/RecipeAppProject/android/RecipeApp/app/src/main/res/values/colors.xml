@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="primary_color">#FF6B35</color>
+    <color name="primary_light">#FF8A65</color>
+    <color name="primary_dark">#E64A19</color>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <!-- Secondary Colors -->
+    <color name="secondary_color">#4CAF50</color>
+    <color name="secondary_light">#81C784</color>
+    <color name="secondary_dark">#388E3C</color>
+
+    <!-- Background Colors -->
+    <color name="background_color">#FAFAFA</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="overlay_background">#80000000</color>
+
+    <!-- Text Colors -->
+    <color name="text_secondary">#757575</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="placeholder_background">#F0F0F0</color>
+
+    <!-- Tab Colors -->
+    <color name="tab_selected">#FF6B35</color>
+    <color name="tab_unselected">#BDBDBD</color>
+    <color name="tab_background">#F5F5F5</color>
+
+    <!-- Rating Color -->
+    <color name="rating_color">#FFC107</color>
+
+    <!-- Status Colors -->
+    <color name="success_color">#4CAF50</color>
+    <color name="error_color">#F44336</color>
+    <color name="warning_color">#FF9800</color>
+
+    <!-- Transparent Colors -->
+    <color name="transparent">#00000000</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="black">#66000000</color>
+
+    <!-- Ripple Colors -->
+    <color name="ripple_color">#1F000000</color>
+    <color name="ripple_color_light">#1AFFFFFF</color>
+
+    <color name="primary_color_dark">#E55A2B</color>
+    <color name="accent_color">#4CAF50</color>
+
+    <!-- Gray Shades -->
+    <color name="gray">#9E9E9E</color>
+    <color name="gray_light">#F5F5F5</color>
+    <color name="gray_dark">#424242</color>
+    <color name="gray_medium">#757575</color>
+
+    <!-- Other Colors -->
+    <color name="yellow">#FFD700</color>
+    <color name="red">#F44336</color>
+    <color name="green">#4CAF50</color>
+    <color name="blue">#2196F3</color>
+    <color name="explore">#2196F3</color>
+
+    <!-- Background Colors -->
+    <color name="background_light">#FAFAFA</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#212121</color>
+
+    <!-- Background colors -->
+    <color name="blur_overlay_background">#80000000</color>
+    <color name="image_placeholder_background">#F5F5F5</color>
+    <color name="button_secondary_background">#F8F9FA</color>
+    <color name="stroke_color">#E0E0E0</color>
+</resources>
