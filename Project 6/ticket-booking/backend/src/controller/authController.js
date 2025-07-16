@@ -2,7 +2,7 @@ import User from '../models/User.js';
 import crypto from 'crypto';
 import { sendTokenResponse, handleError } from '../utils/helpers.js';
 
-export async function registerUser(req, res, next) {
+export async function registerUser(req, res, _) {
     try {
         const { name, email, password, role } = req.body;
 
@@ -13,7 +13,7 @@ export async function registerUser(req, res, next) {
     }
 }
 
-export async function loginUser(req, res, next) {
+export async function loginUser(req, res, _) {
     try {
         const { email, password } = req.body;
 
@@ -37,7 +37,7 @@ export async function loginUser(req, res, next) {
     }
 }
 
-export async function getUserProfile(req, res, next) {
+export async function getUserProfile(req, res, _) {
     try {
         const user = await User.findById(req.user.id);
 
@@ -51,7 +51,7 @@ export async function getUserProfile(req, res, next) {
     }
 }
 
-export async function forgotPassword(req, res, next) {
+export async function forgotPassword(req, res, _) {
     try {
         const { email } = req.body;
 
@@ -83,7 +83,7 @@ export async function forgotPassword(req, res, next) {
     }
 }
 
-export async function resetPassword(req, res, next) {
+export async function resetPassword(req, res, _) {
     try {
         const resettoken = req.params.resettoken;
         const { password } = req.body;
