@@ -7,12 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.just_for_fun.recipeapp.MainActivity
 import com.just_for_fun.recipeapp.R
 import com.just_for_fun.recipeapp.adapter.RecipeRecyclerView
+import com.just_for_fun.recipeapp.viewmodel.RecipeViewModel
+import kotlinx.coroutines.launch
 
 class RecipeFragment : Fragment() {
 
@@ -21,6 +25,8 @@ class RecipeFragment : Fragment() {
     private lateinit var fabAddRecipe: FloatingActionButton
     private lateinit var emptyState: LinearLayout
     private lateinit var addRecipeLayout: AddRecipeLayout
+
+    private val viewModel: RecipeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +41,7 @@ class RecipeFragment : Fragment() {
         initViews(view)
         setupRecyclerView()
         setupFab()
-        loadRecipes()
+        observeRecipes()
 
         // Initialize AddRecipeLayout
         addRecipeLayout = childFragmentManager.findFragmentByTag("AddRecipeLayoutTag") as? AddRecipeLayout
@@ -55,12 +61,33 @@ class RecipeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = RecipeRecyclerView(requireContext(), MainActivity.allRecipes.toList())
+        adapter = RecipeRecyclerView(
+            requireContext(),
+            onSaveToggle = { recipe ->
+                if (viewModel.savedRecipes.value.any { it.id == recipe.id }) {
+                    viewModel.removeSavedRecipe(recipe.id)
+                } else {
+                    viewModel.saveRecipe(recipe)
+                }
+            },
+            isRecipeSaved = { recipeId ->
+                viewModel.savedRecipes.value.any { it.id == recipeId }
+            }
+        )
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         recyclerView.adapter = adapter
 
         val spacingInPixels = resources.getDimensionPixelSize(R.dimen.grid_spacing)
         recyclerView.addItemDecoration(GridSpacingItemDecoration(1, spacingInPixels, true))
+    }
+
+    private fun observeRecipes() {
+        lifecycleScope.launch {
+            viewModel.recipes.collect { recipes ->
+                adapter.updateRecipes(recipes)
+                updateEmptyState(recipes.isEmpty())
+            }
+        }
     }
 
     private fun setupFab() {
@@ -70,12 +97,12 @@ class RecipeFragment : Fragment() {
     }
 
     fun loadRecipes() {
-        adapter.updateRecipes(MainActivity.allRecipes.toList())
-        updateEmptyState(MainActivity.allRecipes.isEmpty())
+        // Recipes are now observed via ViewModel
     }
 
     fun searchRecipes(query: String) {
-        val filteredList = MainActivity.allRecipes.filter {
+        val currentRecipes = viewModel.recipes.value
+        val filteredList = currentRecipes.filter {
             it.name.contains(query, ignoreCase = true) ||
                     it.description.contains(query, ignoreCase = true) ||
                     it.ingredients.any { ingredient -> ingredient.contains(query, ignoreCase = true) }
@@ -85,8 +112,9 @@ class RecipeFragment : Fragment() {
     }
 
     fun resetSearch() {
-        adapter.updateRecipes(MainActivity.allRecipes.toList())
-        updateEmptyState(MainActivity.allRecipes.isEmpty())
+        val currentRecipes = viewModel.recipes.value
+        adapter.updateRecipes(currentRecipes)
+        updateEmptyState(currentRecipes.isEmpty())
     }
 
     private fun updateEmptyState(isEmpty: Boolean) {

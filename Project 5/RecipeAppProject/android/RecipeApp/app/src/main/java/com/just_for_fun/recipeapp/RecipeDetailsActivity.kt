@@ -9,38 +9,64 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.just_for_fun.recipeapp.adapter.IngredientsAdapter
 import com.just_for_fun.recipeapp.adapter.InstructionsAdapter
 import com.just_for_fun.recipeapp.model.Recipe
+import com.just_for_fun.recipeapp.viewmodel.RecipeViewModel
+import kotlinx.coroutines.launch
 
 class RecipeDetailsActivity : AppCompatActivity() {
 
     private lateinit var recipe: Recipe
     private lateinit var recipeSaveButton: ImageButton
+    private lateinit var viewModel: RecipeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.recipe_details)
 
-        val recipeId = intent.getIntExtra("recipe_id", -1)
-        if (recipeId == -1) {
+        viewModel = ViewModelProvider(this)[RecipeViewModel::class.java]
+
+        val recipeId = intent.getStringExtra("recipe_id")
+        if (recipeId == null) {
             Toast.makeText(this, "Recipe not found", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        recipe = Recipe.getSampleRecipes().find { it.id == recipeId } ?: run {
-            Toast.makeText(this, "Recipe not found", Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            loadRecipe(recipeId)
+        }
+    }
 
-            finish()
+    private suspend fun loadRecipe(recipeId: String) {
+        // First check saved recipes
+        val savedRecipe = viewModel.savedRecipes.value.find { it.id == recipeId }
+        if (savedRecipe != null) {
+            recipe = savedRecipe
+            setupViews()
+            setupToolbar()
+            populateRecipeData()
             return
         }
 
-        setupViews()
-        setupToolbar()
-        populateRecipeData()
+        // Then check all recipes
+        val allRecipe = viewModel.recipes.value.find { it.id == recipeId }
+        if (allRecipe != null) {
+            recipe = allRecipe
+            setupViews()
+            setupToolbar()
+            populateRecipeData()
+            return
+        }
+
+        // If not found, show error
+        Toast.makeText(this, "Recipe not found", Toast.LENGTH_SHORT).show()
+        finish()
     }
 
     private fun setupViews() {
@@ -78,7 +104,7 @@ class RecipeDetailsActivity : AppCompatActivity() {
         val ingredientsSection: LinearLayout = findViewById(R.id.ingredients_section)
         val instructionsSection: LinearLayout = findViewById(R.id.instructions_section)
 
-        recipeImage.setImageResource(recipe.image)
+        recipeImage.setImageResource(R.drawable.lava_cake) // TODO: Load from URL
         recipeTitle.text = recipe.name
         recipeTime.text = recipe.cookingTime
         recipeDifficulty.text = recipe.difficulty
@@ -120,24 +146,29 @@ class RecipeDetailsActivity : AppCompatActivity() {
     }
 
     private fun toggleSaveRecipe() {
-        if (MainActivity.isRecipeSaved(recipe.id)) {
-            MainActivity.unsavedRecipe(recipe)
-            recipe.isSaved = false
-        } else {
-            MainActivity.saveRecipe(recipe)
-            recipe.isSaved = true
+        lifecycleScope.launch {
+            val isSaved = viewModel.isRecipeSaved(recipe.id)
+            if (isSaved) {
+                viewModel.removeSavedRecipe(recipe.id)
+                recipe.isSaved = false
+            } else {
+                viewModel.saveRecipe(recipe)
+                recipe.isSaved = true
+            }
+            updateSaveButtonState()
         }
-        updateSaveButtonState()
     }
 
     private fun updateSaveButtonState() {
-        val isSaved = MainActivity.isRecipeSaved(recipe.id)
-        if (isSaved) {
-            recipeSaveButton.setImageResource(R.drawable.bookmark_added)
-            recipeSaveButton.contentDescription = "Remove from saved"
-        } else {
-            recipeSaveButton.setImageResource(R.drawable.ic_bookmark_filled)
-            recipeSaveButton.contentDescription = "Save recipe"
+        lifecycleScope.launch {
+            val isSaved = viewModel.isRecipeSaved(recipe.id)
+            if (isSaved) {
+                recipeSaveButton.setImageResource(R.drawable.bookmark_added)
+                recipeSaveButton.contentDescription = "Remove from saved"
+            } else {
+                recipeSaveButton.setImageResource(R.drawable.ic_bookmark_filled)
+                recipeSaveButton.contentDescription = "Save recipe"
+            }
         }
     }
 

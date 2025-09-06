@@ -16,8 +16,9 @@ import com.just_for_fun.recipeapp.RecipeDetailsActivity
 import com.just_for_fun.recipeapp.model.Recipe
 import kotlin.jvm.java
 
-class RecipeSavedRecyclerView :
-    ListAdapter<Recipe, RecipeSavedRecyclerView.RecipeSavedViewHolder>(DIFF_CALLBACK) {
+class RecipeSavedRecyclerView(
+    private val onUnsaveToggle: (Recipe) -> Unit
+) : ListAdapter<Recipe, RecipeSavedRecyclerView.RecipeSavedViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Recipe>() {
@@ -42,22 +43,16 @@ class RecipeSavedRecyclerView :
         private val recipeUnsavedButton: ImageButton = itemView.findViewById(R.id.recipe_saved)
 
         fun bind(recipe: Recipe) {
-            recipeImageView.setImageResource(recipe.image)
+            // TODO: Load from URL
+            recipeImageView.setImageResource(R.drawable.lava_cake)
             recipeTitleView.text = recipe.name
             recipeDateView.text = "Saved on ${recipe.savedDate ?: "Unknown date"}"
             recipeTimeView.text = recipe.cookingTime
             recipeDifficultyView.text = recipe.difficulty
             recipeRatingView.text = recipe.rating.toString()
 
-            updateSaveButtonState(recipe)
-
             recipeUnsavedButton.setOnClickListener {
-                if (MainActivity.isRecipeSaved(recipe.id)) {
-                    MainActivity.removeFromSaved(recipe.id)
-                } else {
-                    MainActivity.addToSaved(recipe)
-                }
-                updateSaveButtonState(recipe)
+                onUnsaveToggle(recipe)
             }
 
             itemView.setOnClickListener {
@@ -66,18 +61,6 @@ class RecipeSavedRecyclerView :
                 itemView.context.startActivity(intent)
             }
         }
-
-        private fun updateSaveButtonState(recipe: Recipe) {
-            val isSaved = MainActivity.isRecipeSaved(recipe.id)
-            if (isSaved) {
-                recipeUnsavedButton.setImageResource(R.drawable.bookmark_added)
-                recipeUnsavedButton.contentDescription = "Remove from saved"
-            } else {
-                recipeUnsavedButton.setImageResource(R.drawable.ic_bookmark_filled)
-                recipeUnsavedButton.contentDescription = "Save recipe"
-            }
-        }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeSavedViewHolder {

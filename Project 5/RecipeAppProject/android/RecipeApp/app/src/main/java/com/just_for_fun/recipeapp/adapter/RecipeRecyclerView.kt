@@ -16,7 +16,11 @@ import com.just_for_fun.recipeapp.R
 import com.just_for_fun.recipeapp.RecipeDetailsActivity
 import com.just_for_fun.recipeapp.model.Recipe
 
-class RecipeRecyclerView(requireContext: Context, toList: List<Recipe>) : ListAdapter<Recipe, RecipeRecyclerView.RecipeViewHolder>(DIFF_CALLBACK) {
+class RecipeRecyclerView(
+    private val context: Context,
+    private val onSaveToggle: (Recipe) -> Unit,
+    private val isRecipeSaved: (String) -> Boolean
+) : ListAdapter<Recipe, RecipeRecyclerView.RecipeViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Recipe>() {
@@ -40,9 +44,10 @@ class RecipeRecyclerView(requireContext: Context, toList: List<Recipe>) : ListAd
         private val recipeSaveButton: ImageButton = itemView.findViewById(R.id.recipe_layout_save)
 
         fun bind(recipe: Recipe) {
-            recipeImageView.setImageResource(recipe.image)
+            // For now, use placeholder image since image is URL
+            recipeImageView.setImageResource(R.drawable.lava_cake) // TODO: Load from URL
             recipeTitleView.text = recipe.name
-            recipeDateView.text = "Saved on ${recipe.savedDate ?: "Unknown date"}"
+            recipeDateView.text = "Created on ${recipe.createdDate}"
             recipeTimeView.text = recipe.cookingTime
             recipeDifficultyView.text = recipe.difficulty
             recipeRatingView.text = recipe.rating.toString()
@@ -50,15 +55,8 @@ class RecipeRecyclerView(requireContext: Context, toList: List<Recipe>) : ListAd
             updateSaveButtonState(recipe)
 
             recipeSaveButton.setOnClickListener {
-                if (MainActivity.isRecipeSaved(recipe.id)) {
-                    MainActivity.unsavedRecipe(recipe)
-                    recipe.isSaved = false
-                    updateSaveButtonState(recipe)
-                } else {
-                    MainActivity.saveRecipe(recipe)
-                    recipe.isSaved = true
-                    updateSaveButtonState(recipe)
-                }
+                onSaveToggle(recipe)
+                updateSaveButtonState(recipe)
             }
 
             itemView.setOnClickListener {
@@ -69,7 +67,7 @@ class RecipeRecyclerView(requireContext: Context, toList: List<Recipe>) : ListAd
         }
 
         private fun updateSaveButtonState(recipe: Recipe) {
-            val isSaved = MainActivity.isRecipeSaved(recipe.id)
+            val isSaved = isRecipeSaved(recipe.id)
             if (isSaved) {
                 recipeSaveButton.setImageResource(R.drawable.bookmark_added)
                 recipeSaveButton.contentDescription = "Remove from saved"

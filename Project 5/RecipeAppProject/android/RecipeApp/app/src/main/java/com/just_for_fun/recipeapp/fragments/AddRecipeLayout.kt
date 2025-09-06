@@ -273,7 +273,7 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
             val newRecipe = Recipe(
                 id = generateRecipeId(),
                 name = name,
-                image = R.drawable.lava_cake,
+                image = "https://via.placeholder.com/300", // Placeholder URL
                 cookingTime = cookingTime,
                 difficulty = difficulty,
                 rating = 0.0f,
@@ -292,8 +292,8 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         }
     }
 
-    private fun generateRecipeId(): Int {
-        return System.currentTimeMillis().toInt()
+    private fun generateRecipeId(): String {
+        return System.currentTimeMillis().toString()
     }
 
     internal fun clearForm() {

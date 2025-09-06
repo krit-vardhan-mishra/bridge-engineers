@@ -5,9 +5,9 @@ import android.os.Parcelable
 import com.just_for_fun.recipeapp.R
 
 data class Recipe(
-    val id: Int,
+    val id: String, // Changed to String for MongoDB ObjectId
     val name: String,
-    val image: Int,
+    val image: String, // Changed to String for URL
     val cookingTime: String,
     val difficulty: String,
     val rating: Float,
@@ -21,9 +21,9 @@ data class Recipe(
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        parcel.readInt(),
         parcel.readString()!!,
-        parcel.readInt(),
+        parcel.readString()!!,
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readFloat(),
@@ -37,9 +37,9 @@ data class Recipe(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
+        parcel.writeString(id)
         parcel.writeString(name)
-        parcel.writeInt(image)
+        parcel.writeString(image)
         parcel.writeString(cookingTime)
         parcel.writeString(difficulty)
         parcel.writeFloat(rating)
@@ -69,9 +69,9 @@ data class Recipe(
         fun getSampleRecipes(): List<Recipe> {
             return listOf(
                 Recipe(
-                    id = 1,
+                    id = "1",
                     name = "Chocolate Lava Cake",
-                    image = R.drawable.lava_cake,
+                    image = "https://via.placeholder.com/300", // Placeholder URL
                     cookingTime = "25 min",
                     difficulty = "Medium",
                     rating = 4.8f,
@@ -99,9 +99,9 @@ data class Recipe(
                     createdDate = "Dec 20, 2024"
                 ),
                 Recipe(
-                    id = 2,
+                    id = "2",
                     name = "Margherita Pizza",
-                    image = R.drawable.pizza,
+                    image = "https://via.placeholder.com/300", // Placeholder URL
                     cookingTime = "45 min",
                     difficulty = "Easy",
                     rating = 4.6f,
@@ -130,9 +130,9 @@ data class Recipe(
                     createdDate = "Dec 18, 2024"
                 ),
                 Recipe(
-                    id = 3,
+                    id = "3",
                     name = "Chicken Curry",
-                    image = R.drawable.curry,
+                    image = "https://via.placeholder.com/300", // Placeholder URL
                     cookingTime = "60 min",
                     difficulty = "Hard",
                     rating = 4.9f,
@@ -166,9 +166,9 @@ data class Recipe(
                     createdDate = "Dec 15, 2024"
                 ),
                 Recipe(
-                    id = 4,
+                    id = "4",
                     name = "Caesar Salad",
-                    image = R.drawable.salad,
+                    image = "https://via.placeholder.com/300", // Placeholder URL
                     cookingTime = "15 min",
                     difficulty = "Easy",
                     rating = 4.3f,
@@ -199,9 +199,9 @@ data class Recipe(
                     createdDate = "Dec 22, 2024"
                 ),
                 Recipe(
-                    id = 5,
+                    id = "5",
                     name = "Pasta Carbonara",
-                    image = R.drawable.pasta_carbonara,
+                    image = "https://via.placeholder.com/300", // Placeholder URL
                     cookingTime = "25 mins",
                     difficulty = "Easy",
                     rating = 4.5f,
@@ -228,9 +228,9 @@ data class Recipe(
                     createdDate = "2023-10-25"
                 ),
                 Recipe(
-                    id = 6,
+                    id = "6",
                     name = "Beef Steak",
-                    image = R.drawable.beef_steak,
+                    image = "https://via.placeholder.com/300", // Placeholder URL
                     cookingTime = "15 mins",
                     difficulty = "Medium",
                     rating = 4.9f,
@@ -255,9 +255,9 @@ data class Recipe(
                     createdDate = "2023-10-23"
                 ),
                 Recipe(
-                    id = 7,
+                    id = "7",
                     name = "Fish Tacos",
-                    image = R.drawable.fish_tacos,
+                    image = "https://via.placeholder.com/300", // Placeholder URL
                     cookingTime = "35 mins",
                     difficulty = "Easy",
                     rating = 4.7f,

@@ -6,12 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.just_for_fun.recipeapp.MainActivity
 import com.just_for_fun.recipeapp.R
 import com.just_for_fun.recipeapp.adapter.RecipeSavedRecyclerView
+import com.just_for_fun.recipeapp.viewmodel.RecipeViewModel
+import kotlinx.coroutines.launch
 
 class SavedFragment : Fragment() {
 
@@ -19,6 +23,8 @@ class SavedFragment : Fragment() {
     private lateinit var adapter: RecipeSavedRecyclerView
     private lateinit var emptyStateSaved: LinearLayout
     private lateinit var btnExploreRecipes: MaterialButton
+
+    private val viewModel: RecipeViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +40,7 @@ class SavedFragment : Fragment() {
         initViews(view)
         setupRecyclerView()
         setupEmptyState()
+        observeSavedRecipes()
     }
 
     override fun onResume() {
@@ -48,7 +55,9 @@ class SavedFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = RecipeSavedRecyclerView()
+        adapter = RecipeSavedRecyclerView(onUnsaveToggle = { recipe ->
+            viewModel.removeSavedRecipe(recipe.id)
+        })
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
 
@@ -62,18 +71,28 @@ class SavedFragment : Fragment() {
         }
     }
 
+    private fun observeSavedRecipes() {
+        lifecycleScope.launch {
+            viewModel.savedRecipes.collect { savedRecipes ->
+                adapter.submitList(savedRecipes)
+                updateEmptyState(savedRecipes.isEmpty())
+            }
+        }
+    }
+
     fun resetSearch() {
-        adapter.submitList(MainActivity.savedRecipes)
-        updateEmptyState(MainActivity.savedRecipes.isEmpty())
+        val currentSaved = viewModel.savedRecipes.value
+        adapter.submitList(currentSaved)
+        updateEmptyState(currentSaved.isEmpty())
     }
 
     private fun loadSavedRecipes() {
-        adapter.submitList(MainActivity.savedRecipes.toList())
-        updateEmptyState(MainActivity.savedRecipes.isEmpty())
+        // Saved recipes are now observed via ViewModel
     }
 
     fun searchSavedRecipes(query: String) {
-        val filteredList = MainActivity.savedRecipes.filter {
+        val currentSaved = viewModel.savedRecipes.value
+        val filteredList = currentSaved.filter {
             it.name.contains(query, ignoreCase = true) ||
                     it.description.contains(query, ignoreCase = true)
         }

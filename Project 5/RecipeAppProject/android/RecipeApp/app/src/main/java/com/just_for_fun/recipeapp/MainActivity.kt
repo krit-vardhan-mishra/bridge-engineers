@@ -12,12 +12,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.just_for_fun.recipeapp.fragments.AddRecipeLayout
 import com.just_for_fun.recipeapp.fragments.RecipeFragment
 import com.just_for_fun.recipeapp.fragments.SavedFragment
 import com.just_for_fun.recipeapp.model.Recipe
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import com.just_for_fun.recipeapp.viewmodel.RecipeViewModel
 import androidx.core.view.isVisible
 
 class MainActivity : AppCompatActivity(), AddRecipeLayout.AddRecipeListener {
@@ -29,46 +29,13 @@ class MainActivity : AppCompatActivity(), AddRecipeLayout.AddRecipeListener {
     private lateinit var recipesTab: TextView
     private lateinit var savedTab: TextView
 
-    companion object {
-        val allRecipes = Recipe.getSampleRecipes().toMutableList()
-        val savedRecipes = mutableListOf<Recipe>()
-
-        fun saveRecipe(recipe: Recipe) {
-            if (!savedRecipes.any { it.id == recipe.id }) {
-                val currentDate =
-                    LocalDate.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))
-                val savedRecipe = recipe.copy(isSaved = true, savedDate = currentDate)
-                savedRecipes.add(savedRecipe)
-                allRecipes.find { it.id == recipe.id }?.isSaved = true
-            }
-        }
-
-        fun unsavedRecipe(recipe: Recipe) {
-            savedRecipes.removeAll { it.id == recipe.id }
-            allRecipes.find { it.id == recipe.id }?.isSaved = false
-        }
-
-        fun isRecipeSaved(recipeId: Int): Boolean {
-            return savedRecipes.any { it.id == recipeId }
-        }
-
-        fun addToSaved(recipe: Recipe) {
-            saveRecipe(recipe)
-            allRecipes.find { it.id == recipe.id }?.isSaved = true
-        }
-
-        fun removeFromSaved(recipeId: Int) {
-            val recipe = savedRecipes.find { it.id == recipeId }
-            recipe?.let {
-                unsavedRecipe(it)
-                allRecipes.find { r -> r.id == recipeId }?.isSaved = false
-            }
-        }
-    }
+    private lateinit var viewModel: RecipeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        viewModel = ViewModelProvider(this)[RecipeViewModel::class.java]
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.top_bar)) { view, insets ->
             val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
@@ -203,8 +170,7 @@ class MainActivity : AppCompatActivity(), AddRecipeLayout.AddRecipeListener {
     }
 
     override fun onRecipeAdded(recipe: Recipe) {
-        allRecipes.add(recipe)
-        refreshRecipeFragment()
+        viewModel.addRecipe(recipe)
     }
 
     private fun refreshRecipeFragment() {
