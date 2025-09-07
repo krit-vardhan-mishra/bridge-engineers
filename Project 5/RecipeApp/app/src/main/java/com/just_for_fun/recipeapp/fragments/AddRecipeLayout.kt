@@ -7,6 +7,8 @@ import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +16,12 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -59,6 +63,8 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
     private lateinit var etInstructions: TextInputEditText
     private lateinit var etCloseRecipe: ImageButton
     private lateinit var uploadProgressBar: ProgressBar
+    private lateinit var loadingOverlay: FrameLayout
+    private lateinit var loadingMessage: TextView
 
     private var addRecipeListener: AddRecipeListener? = null
     private val viewModel: RecipeViewModel by activityViewModels()
@@ -125,6 +131,10 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         etInstructions = view.findViewById(R.id.et_instructions)
         etCloseRecipe = view.findViewById(R.id.btn_close_add_recipe)
         uploadProgressBar = view.findViewById(R.id.upload_progress_bar)
+        
+        // Initialize loading overlay elements
+        loadingOverlay = view.findViewById<FrameLayout>(R.id.loading_overlay_container)
+        loadingMessage = loadingOverlay.findViewById<TextView>(R.id.loading_message)
     }
 
     private fun observeUploadState() {
@@ -157,12 +167,13 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
     private fun showLoadingState(isLoading: Boolean) {
         if (isLoading) {
             Log.d(TAG, "📱 Showing loading spinner...")
-            uploadProgressBar.visibility = View.VISIBLE
+            loadingOverlay.visibility = View.VISIBLE
+            loadingMessage.text = "Uploading recipe..."
             btnSaveRecipe.isEnabled = false
             btnSaveRecipe.text = "Uploading..."
         } else {
             Log.d(TAG, "📱 Hiding loading spinner...")
-            uploadProgressBar.visibility = View.GONE
+            loadingOverlay.visibility = View.GONE
             btnSaveRecipe.isEnabled = true
             btnSaveRecipe.text = "Save Recipe"
         }
@@ -186,6 +197,41 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         btnSelectImage.setOnClickListener {
             showImagePickerDialog()
         }
+
+        // Add text watchers for ingredients and instructions
+        setupTextWatchers()
+    }
+
+    private fun setupTextWatchers() {
+        etIngredients.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val text = s?.toString() ?: ""
+                val itemCount = text.split("\n").filter { it.isNotBlank() }.size
+                if (itemCount > 0) {
+                    etIngredients.hint = "Add ingredients (one per line) - $itemCount item${if (itemCount != 1) "s" else ""}"
+                } else {
+                    etIngredients.hint = "Add ingredients (one per line)"
+                }
+            }
+        })
+
+        etInstructions.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val text = s?.toString() ?: ""
+                val itemCount = text.split("\n").filter { it.isNotBlank() }.size
+                if (itemCount > 0) {
+                    etInstructions.hint = "Add cooking instructions (step by step) - $itemCount step${if (itemCount != 1) "s" else ""}"
+                } else {
+                    etInstructions.hint = "Add cooking instructions (step by step)"
+                }
+            }
+        })
     }
 
     private fun setupDifficultyDropdown() {
@@ -337,7 +383,7 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
             Log.d(TAG, "✅ Validation passed - creating recipe object...")
             
             val newRecipe = Recipe(
-                id = "", // Let the backend assign the ID
+                // Don't provide an ID at all - remove the id parameter entirely
                 name = name,
                 image = "", // Will be set by backend after upload
                 cookingTime = cookingTime,
@@ -383,6 +429,10 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         selectedImageUri = null
         ivRecipeImagePreview.visibility = View.GONE
         imagePlaceholder.visibility = View.VISIBLE
+
+        // Reset hints
+        etIngredients.hint = "Add ingredients (one per line)"
+        etInstructions.hint = "Add cooking instructions (step by step)"
 
         // Clear errors
         etRecipeName.error = null

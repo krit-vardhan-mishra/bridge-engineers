@@ -2,21 +2,32 @@ package com.just_for_fun.recipeapp.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import com.just_for_fun.recipeapp.R
 
 data class Recipe(
-    val id: String, // Changed to String for MongoDB ObjectId
+    @SerializedName("_id")
+    val id: String = "", // Maps MongoDB's _id to our id field
     val name: String,
+    @SerializedName("image")
     val image: String, // Changed to String for URL
+    @SerializedName("cookingTime")
     val cookingTime: String,
+    @SerializedName("difficulty")
     val difficulty: String,
+    @SerializedName("rating")
     val rating: Float,
+    @SerializedName("description")
     val description: String = "",
+    @SerializedName("ingredients")
     val ingredients: List<String> = emptyList(),
+    @SerializedName("instructions")
     val instructions: List<String> = emptyList(),
+    @SerializedName("servings")
     val servings: Int = 1,
     var isSaved: Boolean = false,
     val savedDate: String? = null,
+    @SerializedName("createdDate")
     val createdDate: String = ""
 ) : Parcelable {
 

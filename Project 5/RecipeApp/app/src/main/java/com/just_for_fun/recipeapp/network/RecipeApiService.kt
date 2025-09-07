@@ -12,15 +12,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
+import com.just_for_fun.recipeapp.model.NewRecipeRequest
+
 interface RecipeApiService {
-    @GET("recipes")
+    @GET("api/recipes")
     suspend fun getRecipes(): List<Recipe>
 
-    @POST("recipes")
-    suspend fun createRecipe(@Body recipe: Recipe): Recipe
+    @POST("api/recipes")
+    suspend fun createRecipe(@Body recipe: NewRecipeRequest): Recipe
 
     @Multipart
-    @POST("recipes")
+    @POST("api/recipes")
     suspend fun createRecipeWithImage(
         @Part("name") name: RequestBody,
         @Part("cookingTime") cookingTime: RequestBody,
@@ -34,13 +36,13 @@ interface RecipeApiService {
         @Part image: MultipartBody.Part?
     ): Recipe
 
-    @GET("recipes/{id}")
+    @GET("api/recipes/{id}")
     suspend fun getRecipe(@Path("id") id: String): Recipe
 
-    @PUT("recipes/{id}")
+    @PUT("api/recipes/{id}")
     suspend fun updateRecipe(@Path("id") id: String, @Body recipe: Recipe): Recipe
 
-    @DELETE("recipes/{id}")
+    @DELETE("api/recipes/{id}")
     suspend fun deleteRecipe(@Path("id") id: String)
 }
 
@@ -86,6 +88,7 @@ object RetrofitClient {
         .readTimeout(1, java.util.concurrent.TimeUnit.MINUTES)
         .writeTimeout(1, java.util.concurrent.TimeUnit.MINUTES)
         .addInterceptor(VercelAuthBypassInterceptor())
+        .addInterceptor(com.just_for_fun.recipeapp.debug.ApiLogger.createLoggingInterceptor())
         .build()
 
     val apiService: RecipeApiService by lazy {

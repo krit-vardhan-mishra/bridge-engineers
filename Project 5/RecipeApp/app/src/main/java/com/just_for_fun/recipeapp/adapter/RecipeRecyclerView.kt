@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.just_for_fun.recipeapp.MainActivity
+import com.bumptech.glide.Glide
 import com.just_for_fun.recipeapp.R
 import com.just_for_fun.recipeapp.RecipeDetailsActivity
 import com.just_for_fun.recipeapp.model.Recipe
@@ -44,8 +44,17 @@ class RecipeRecyclerView(
         private val recipeSaveButton: ImageButton = itemView.findViewById(R.id.recipe_layout_save)
 
         fun bind(recipe: Recipe) {
-            // For now, use placeholder image since image is URL
-            recipeImageView.setImageResource(R.drawable.lava_cake) // TODO: Load from URL
+            // Load image from URL or use placeholder
+            if (recipe.image.isNotEmpty()) {
+                Glide.with(itemView.context)
+                    .load(recipe.image)
+                    .placeholder(R.drawable.lava_cake)
+                    .error(R.drawable.lava_cake)
+                    .centerCrop()
+                    .into(recipeImageView)
+            } else {
+                recipeImageView.setImageResource(R.drawable.lava_cake)
+            }
             recipeTitleView.text = recipe.name
             recipeDateView.text = "Created on ${recipe.createdDate}"
             recipeTimeView.text = recipe.cookingTime

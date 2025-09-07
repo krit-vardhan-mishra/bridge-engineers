@@ -12,6 +12,11 @@
     android:visibility="gone"
     tools:visibility="visible">
 
+    <!-- Loading Overlay -->
+    <include
+        android:id="@+id/loading_overlay_container"
+        layout="@layout/loading_overlay" />
+        
     <!-- Blur/Dim Background -->
     <View
         android:id="@+id/blur_background"

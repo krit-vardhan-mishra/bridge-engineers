@@ -2,6 +2,7 @@ package com.just_for_fun.recipeapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -13,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.just_for_fun.recipeapp.R
 import com.just_for_fun.recipeapp.adapter.IngredientsAdapter
 import com.just_for_fun.recipeapp.adapter.InstructionsAdapter
 import com.just_for_fun.recipeapp.model.Recipe
@@ -64,7 +67,21 @@ class RecipeDetailsActivity : AppCompatActivity() {
             return
         }
 
-        // If not found, show error
+        // If not found locally, fetch from backend
+        try {
+            val fetchedRecipe = viewModel.getRecipeById(recipeId)
+            if (fetchedRecipe != null) {
+                recipe = fetchedRecipe
+                setupViews()
+                setupToolbar()
+                populateRecipeData()
+                return
+            }
+        } catch (e: Exception) {
+            Log.e("RecipeDetailsActivity", "Error fetching recipe from backend: ${e.message}", e)
+        }
+
+        // If not found anywhere, show error
         Toast.makeText(this, "Recipe not found", Toast.LENGTH_SHORT).show()
         finish()
     }
@@ -104,7 +121,17 @@ class RecipeDetailsActivity : AppCompatActivity() {
         val ingredientsSection: LinearLayout = findViewById(R.id.ingredients_section)
         val instructionsSection: LinearLayout = findViewById(R.id.instructions_section)
 
-        recipeImage.setImageResource(R.drawable.lava_cake) // TODO: Load from URL
+        // Load image from URL or use placeholder
+        if (recipe.image.isNotEmpty()) {
+            Glide.with(this)
+                .load(recipe.image)
+                .placeholder(R.drawable.lava_cake)
+                .error(R.drawable.lava_cake)
+                .centerCrop()
+                .into(recipeImage)
+        } else {
+            recipeImage.setImageResource(R.drawable.lava_cake)
+        }
         recipeTitle.text = recipe.name
         recipeTime.text = recipe.cookingTime
         recipeDifficulty.text = recipe.difficulty

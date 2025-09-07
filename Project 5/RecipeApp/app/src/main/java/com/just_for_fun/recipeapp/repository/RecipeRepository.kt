@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import com.just_for_fun.recipeapp.database.AppDatabase
 import com.just_for_fun.recipeapp.database.SavedRecipeEntity
+import com.just_for_fun.recipeapp.model.NewRecipeRequest
 import com.just_for_fun.recipeapp.model.Recipe
 import com.just_for_fun.recipeapp.network.RetrofitClient
 import kotlinx.coroutines.flow.Flow
@@ -30,13 +31,26 @@ class RecipeRepository(private val context: Context) {
     // Fetch recipes from backend
     fun getRecipes(): Flow<List<Recipe>> = flow {
         try {
-            Log.d(TAG, "🔍 Fetching recipes from backend at URL: ${apiService.getRecipes()}")
+            Log.d(TAG, "🔍 Fetching recipes from backend at URL: https://recipe-app-backend-ihr5.onrender.com/api/recipes")
             val recipes = apiService.getRecipes()
             Log.d(TAG, "✅ Successfully fetched recipes: $recipes")
             emit(recipes)
         } catch (e: Exception) {
             Log.e(TAG, "❌ Error fetching recipes: ${e.message}", e)
             emit(emptyList())
+        }
+    }
+
+    // Fetch single recipe by ID from backend
+    suspend fun getRecipeById(recipeId: String): Recipe? {
+        return try {
+            Log.d(TAG, "🔍 Fetching recipe by ID from backend: $recipeId")
+            val recipe = apiService.getRecipe(recipeId)
+            Log.d(TAG, "✅ Successfully fetched recipe: $recipe")
+            recipe
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ Error fetching recipe by ID: ${e.message}", e)
+            null
         }
     }
 
@@ -66,10 +80,14 @@ class RecipeRepository(private val context: Context) {
 
     // Add new recipe to backend (without image)
     suspend fun addRecipe(recipe: Recipe): Recipe {
-        Log.d(TAG, "📤 Adding recipe to backend at URL: ${apiService.createRecipe(recipe)}")
-        Log.d(TAG, "📝 Recipe payload: $recipe")
+        Log.d(TAG, "📤 Adding recipe to backend at URL: https://recipe-app-backend-ihr5.onrender.com/api/recipes")
+        
+        // Convert Recipe to NewRecipeRequest to avoid sending ID field
+        val newRecipeRequest = NewRecipeRequest.fromRecipe(recipe)
+        Log.d(TAG, "📝 Recipe payload: $newRecipeRequest")
+        
         return try {
-            val response = apiService.createRecipe(recipe)
+            val response = apiService.createRecipe(newRecipeRequest)
             Log.d(TAG, "✅ Recipe added successfully: $response")
             response
         } catch (e: Exception) {

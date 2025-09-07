@@ -10,11 +10,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.just_for_fun.recipeapp.MainActivity
 import com.just_for_fun.recipeapp.R
 import com.just_for_fun.recipeapp.RecipeDetailsActivity
 import com.just_for_fun.recipeapp.model.Recipe
-import kotlin.jvm.java
 
 class RecipeSavedRecyclerView(
     private val onUnsaveToggle: (Recipe) -> Unit
@@ -43,8 +43,17 @@ class RecipeSavedRecyclerView(
         private val recipeUnsavedButton: ImageButton = itemView.findViewById(R.id.recipe_saved)
 
         fun bind(recipe: Recipe) {
-            // TODO: Load from URL
-            recipeImageView.setImageResource(R.drawable.lava_cake)
+            // Load image from URL or use placeholder
+            if (recipe.image.isNotEmpty()) {
+                Glide.with(itemView.context)
+                    .load(recipe.image)
+                    .placeholder(R.drawable.lava_cake)
+                    .error(R.drawable.lava_cake)
+                    .centerCrop()
+                    .into(recipeImageView)
+            } else {
+                recipeImageView.setImageResource(R.drawable.lava_cake)
+            }
             recipeTitleView.text = recipe.name
             recipeDateView.text = "Saved on ${recipe.savedDate ?: "Unknown date"}"
             recipeTimeView.text = recipe.cookingTime

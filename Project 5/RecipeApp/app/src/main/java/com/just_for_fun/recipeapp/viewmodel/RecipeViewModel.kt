@@ -122,7 +122,7 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
                 
                 // Update success state
                 _uploadState.value = UploadState(isSuccess = true)
-                Log.d(TAG, "✅ Recipe upload completed successfully")
+                Log.d(TAG, "✅ Recipe upload completed successfully ${result?.id}")
                 
                 // Refresh recipes list
                 loadRecipes()
@@ -136,5 +136,9 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
 
     fun resetUploadState() {
         _uploadState.value = UploadState()
+    }
+
+    suspend fun getRecipeById(recipeId: String): Recipe? {
+        return repository.getRecipeById(recipeId)
     }
 }

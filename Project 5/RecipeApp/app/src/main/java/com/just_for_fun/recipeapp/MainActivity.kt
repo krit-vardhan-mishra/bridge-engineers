@@ -170,7 +170,11 @@ class MainActivity : AppCompatActivity(), AddRecipeLayout.AddRecipeListener {
     }
 
     override fun onRecipeAdded(recipe: Recipe, imageUri: android.net.Uri?) {
-        viewModel.addRecipe(recipe)
+        if (imageUri != null) {
+            viewModel.addRecipeWithImage(recipe, imageUri)
+        } else {
+            viewModel.addRecipe(recipe)
+        }
     }
 
     private fun refreshRecipeFragment() {
