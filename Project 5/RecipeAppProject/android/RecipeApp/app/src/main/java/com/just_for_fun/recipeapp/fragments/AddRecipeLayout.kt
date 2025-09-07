@@ -271,18 +271,18 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
 
         if (isValid) {
             val newRecipe = Recipe(
-                id = generateRecipeId(),
+                id = "", // Let the backend assign the ID
                 name = name,
-                image = "https://via.placeholder.com/300", // Placeholder URL
+                image = selectedImageUri?.toString() ?: "", // Use actual image or empty string
                 cookingTime = cookingTime,
                 difficulty = difficulty,
                 rating = 0.0f,
                 description = description,
-                ingredients = ingredients.split("\n"),
-                instructions = instructions.split("\n"),
+                ingredients = ingredients.split("\n").filter { it.isNotBlank() },
+                instructions = instructions.split("\n").filter { it.isNotBlank() },
                 servings = servings.toIntOrNull() ?: 1,
                 isSaved = false,
-                createdDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                createdDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(Date())
             )
 
             addRecipeListener?.onRecipeAdded(newRecipe)

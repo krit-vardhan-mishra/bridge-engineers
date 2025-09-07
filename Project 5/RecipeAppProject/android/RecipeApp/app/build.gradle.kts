@@ -5,6 +5,17 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
 }
 
+// Import required for Properties
+import java.util.Properties
+import java.io.FileInputStream
+
+// Read properties from local.properties
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
 android {
     namespace = "com.just_for_fun.recipeapp"
     compileSdk = 35
@@ -17,15 +28,25 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Add API configuration to BuildConfig
+        buildConfigField("String", "PRODUCTION_BASE_URL", "\"${localProperties.getProperty("PRODUCTION_BASE_URL", "https://your-backend.vercel.app/api/")}\"")
+        buildConfigField("String", "VERCEL_AUTH_BYPASS", "\"${localProperties.getProperty("VERCEL_AUTH_BYPASS", "")}\"")
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "PRODUCTION_BASE_URL", "\"${localProperties.getProperty("PRODUCTION_BASE_URL", "https://your-backend.vercel.app/api/")}\"")
+            buildConfigField("String", "VERCEL_AUTH_BYPASS", "\"${localProperties.getProperty("VERCEL_AUTH_BYPASS", "")}\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "PRODUCTION_BASE_URL", "\"${localProperties.getProperty("PRODUCTION_BASE_URL", "https://your-backend.vercel.app/api/")}\"")
+            buildConfigField("String", "VERCEL_AUTH_BYPASS", "\"${localProperties.getProperty("VERCEL_AUTH_BYPASS", "")}\"")
         }
     }
     compileOptions {
@@ -37,6 +58,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -61,6 +83,8 @@ dependencies {
     // Networking
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // Room for SQLite
     implementation("androidx.room:room-runtime:2.6.1")

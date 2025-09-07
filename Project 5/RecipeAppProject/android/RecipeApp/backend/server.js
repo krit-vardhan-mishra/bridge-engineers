@@ -11,7 +11,6 @@ const { uploadOnCloudinary } = require('./cloudinary.js');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -76,10 +75,25 @@ app.post('/api/recipes', upload.single('image'), async (req, res) => {
     } else if (req.body.image) {
       imageUrl = req.body.image;
     }
-    const recipeData = {
-      ...req.body,
-      image: imageUrl,
-    };
+    const recipeData = { ...req.body, image: imageUrl };
+
+    // Parse ingredients and instructions if they are strings (from form-data)
+    if (typeof recipeData.ingredients === 'string') {
+      try {
+        recipeData.ingredients = JSON.parse(recipeData.ingredients);
+      } catch (e) {
+        // If parsing fails, keep as is or handle error
+        console.error('Error parsing ingredients:', e);
+      }
+    }
+    if (typeof recipeData.instructions === 'string') {
+      try {
+        recipeData.instructions = JSON.parse(recipeData.instructions);
+      } catch (e) {
+        console.error('Error parsing instructions:', e);
+      }
+    }
+
     const recipe = new Recipe(recipeData);
     await recipe.save();
     res.status(201).json(recipe);

@@ -21,7 +21,9 @@ class RecipeRepository(private val context: Context) {
             val recipes = apiService.getRecipes()
             emit(recipes)
         } catch (e: Exception) {
-            // Emit empty list or handle error
+            // Log the error for debugging
+            android.util.Log.e("RecipeRepository", "Error fetching recipes", e)
+            // Emit empty list when there's an error or no data
             emit(emptyList())
         }
     }

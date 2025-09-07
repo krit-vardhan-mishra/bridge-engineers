@@ -19,6 +19,9 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
     private val _savedRecipes = MutableStateFlow<List<Recipe>>(emptyList())
     val savedRecipes: StateFlow<List<Recipe>> = _savedRecipes
 
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -30,9 +33,16 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
     fun loadRecipes() {
         viewModelScope.launch {
             _isLoading.value = true
-            repository.getRecipes().collect { recipeList ->
-                _recipes.value = recipeList
+            _error.value = null
+            try {
+                repository.getRecipes().collect { recipeList ->
+                    _recipes.value = recipeList
+                    _isLoading.value = false
+                }
+            } catch (e: Exception) {
+                _error.value = "Failed to load recipes: ${e.message}"
                 _isLoading.value = false
+                _recipes.value = emptyList()
             }
         }
     }
@@ -66,10 +76,14 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
     fun addRecipe(recipe: Recipe) {
         viewModelScope.launch {
             try {
+                _isLoading.value = true
                 repository.addRecipe(recipe)
                 loadRecipes() // Refresh recipes after adding
+                _error.value = null
             } catch (e: Exception) {
-                // Handle error
+                _error.value = "Failed to add recipe: ${e.message}"
+            } finally {
+                _isLoading.value = false
             }
         }
     }

@@ -85,7 +85,23 @@ class RecipeFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.recipes.collect { recipes ->
                 adapter.updateRecipes(recipes)
-                updateEmptyState(recipes.isEmpty())
+                updateEmptyState(recipes.isEmpty() && !viewModel.isLoading.value)
+            }
+        }
+        
+        lifecycleScope.launch {
+            viewModel.isLoading.collect { isLoading ->
+                // Update loading state if needed
+                updateEmptyState(viewModel.recipes.value.isEmpty() && !isLoading)
+            }
+        }
+        
+        lifecycleScope.launch {
+            viewModel.error.collect { error ->
+                error?.let {
+                    // Show error message to user
+                    android.widget.Toast.makeText(requireContext(), it, android.widget.Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
