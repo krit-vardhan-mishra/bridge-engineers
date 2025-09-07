@@ -9,15 +9,37 @@ cloudinary.config({
 
 const uploadOnCloudinary = async (localFilePath) => {
   try {
-    if (!localFilePath) return null;
+    if (!localFilePath) {
+      console.log('❌ No file path provided to Cloudinary');
+      return null;
+    }
+    
+    console.log('☁️ Starting Cloudinary upload for file:', localFilePath);
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
     });
+    
+    console.log('✅ Cloudinary upload successful!');
+    console.log('🔗 Image URL:', response.url);
+    console.log('📏 Image size:', response.bytes, 'bytes');
+    
+    // Clean up local file
     fs.unlinkSync(localFilePath);
+    console.log('🗑️ Local file cleaned up');
+    
     return response;
   } catch (error) {
-    fs.unlinkSync(localFilePath);
-    console.error("Error uploading file to Cloudinary:", error);
+    console.error('❌ Cloudinary upload failed:', error.message);
+    console.error('🔍 Full error:', error);
+    
+    // Clean up local file even on error
+    try {
+      fs.unlinkSync(localFilePath);
+      console.log('🗑️ Local file cleaned up after error');
+    } catch (cleanupError) {
+      console.error('⚠️ Failed to cleanup local file:', cleanupError.message);
+    }
+    
     return null;
   }
 };

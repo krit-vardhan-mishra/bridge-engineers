@@ -4,7 +4,9 @@ import com.just_for_fun.recipeapp.BuildConfig
 import com.just_for_fun.recipeapp.model.Recipe
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,6 +18,21 @@ interface RecipeApiService {
 
     @POST("recipes")
     suspend fun createRecipe(@Body recipe: Recipe): Recipe
+
+    @Multipart
+    @POST("recipes")
+    suspend fun createRecipeWithImage(
+        @Part("name") name: RequestBody,
+        @Part("cookingTime") cookingTime: RequestBody,
+        @Part("difficulty") difficulty: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("ingredients") ingredients: RequestBody,
+        @Part("instructions") instructions: RequestBody,
+        @Part("servings") servings: RequestBody,
+        @Part("rating") rating: RequestBody,
+        @Part("createdDate") createdDate: RequestBody,
+        @Part image: MultipartBody.Part?
+    ): Recipe
 
     @GET("recipes/{id}")
     suspend fun getRecipe(@Path("id") id: String): Recipe

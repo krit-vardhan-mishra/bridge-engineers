@@ -69,7 +69,7 @@ const connectToDatabase = async () => {
 };
 
 // API Routes
-app.get('/api/recipes', async (req, res) => {
+app.get('/recipes', async (req, res) => {
   try {
     await connectToDatabase();
     const recipes = await Recipe.find().sort({ createdDate: -1 });
@@ -80,50 +80,80 @@ app.get('/api/recipes', async (req, res) => {
   }
 });
 
-app.post('/api/recipes', upload.single('image'), async (req, res) => {
+app.post('/recipes', upload.single('image'), async (req, res) => {
+  console.log('📥 Starting recipe creation process...');
+  console.log('📋 Recipe data received:', { 
+    name: req.body.name, 
+    hasFile: !!req.file,
+    fileName: req.file?.originalname 
+  });
+  
   try {
+    console.log('🔌 Connecting to MongoDB...');
     await connectToDatabase();
+    console.log('✅ MongoDB connection successful');
     
     let imageUrl = '';
     if (req.file) {
+      console.log('🖼️ Image file detected, starting Cloudinary upload...');
+      console.log('📁 Local file path:', req.file.path);
+      
       const localPath = path.resolve(req.file.path);
+      console.log('☁️ Uploading to Cloudinary...');
+      
       const uploadResult = await uploadOnCloudinary(localPath);
       if (uploadResult && uploadResult.url) {
         imageUrl = uploadResult.url;
+        console.log('✅ Cloudinary upload successful:', imageUrl);
+      } else {
+        console.log('❌ Cloudinary upload failed - no URL returned');
       }
     } else if (req.body.image) {
       imageUrl = req.body.image;
+      console.log('🔗 Using provided image URL:', imageUrl);
+    } else {
+      console.log('ℹ️ No image provided for recipe');
     }
 
     const recipeData = { ...req.body, image: imageUrl };
+    console.log('📝 Processing recipe data...');
 
     // Parse ingredients and instructions if they are strings (from form-data)
     if (typeof recipeData.ingredients === 'string') {
       try {
         recipeData.ingredients = JSON.parse(recipeData.ingredients);
+        console.log('✅ Ingredients parsed as JSON');
       } catch (e) {
         // If parsing fails, split by newlines
         recipeData.ingredients = recipeData.ingredients.split('\n').filter(item => item.trim());
+        console.log('✅ Ingredients parsed as text lines');
       }
     }
     if (typeof recipeData.instructions === 'string') {
       try {
         recipeData.instructions = JSON.parse(recipeData.instructions);
+        console.log('✅ Instructions parsed as JSON');
       } catch (e) {
         // If parsing fails, split by newlines
         recipeData.instructions = recipeData.instructions.split('\n').filter(item => item.trim());
+        console.log('✅ Instructions parsed as text lines');
       }
     }
 
+    console.log('💾 Saving recipe to MongoDB...');
     const recipe = new Recipe(recipeData);
     await recipe.save();
+    console.log('✅ Recipe saved successfully to MongoDB with ID:', recipe._id);
+    
     res.status(201).json(recipe);
+    console.log('🎉 Recipe creation process completed successfully');
   } catch (err) {
-    console.error('Error creating recipe:', err);
+    console.error('❌ Error creating recipe:', err.message);
+    console.error('🔍 Full error details:', err);
     res.status(400).json({ error: err.message });
   }
 });
-app.get('/api/recipes/:id', async (req, res) => {
+app.get('/recipes/:id', async (req, res) => {
   try {
     await connectToDatabase();
     const recipe = await Recipe.findById(req.params.id);
@@ -135,7 +165,7 @@ app.get('/api/recipes/:id', async (req, res) => {
   }
 });
 
-app.put('/api/recipes/:id', upload.single('image'), async (req, res) => {
+app.put('/recipes/:id', upload.single('image'), async (req, res) => {
   try {
     await connectToDatabase();
     
@@ -175,7 +205,7 @@ app.put('/api/recipes/:id', upload.single('image'), async (req, res) => {
   }
 });
 
-app.delete('/api/recipes/:id', async (req, res) => {
+app.delete('/recipes/:id', async (req, res) => {
   try {
     await connectToDatabase();
     const recipe = await Recipe.findByIdAndDelete(req.params.id);
@@ -188,7 +218,7 @@ app.delete('/api/recipes/:id', async (req, res) => {
 });
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Recipe API is running', timestamp: new Date().toISOString() });
 });
 

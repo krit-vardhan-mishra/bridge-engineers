@@ -1,6 +1,8 @@
 package com.just_for_fun.recipeapp.viewmodel
 
 import android.app.Application
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.just_for_fun.recipeapp.model.Recipe
@@ -9,7 +11,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+data class UploadState(
+    val isLoading: Boolean = false,
+    val isSuccess: Boolean = false,
+    val error: String? = null
+)
+
 class RecipeViewModel(application: Application) : AndroidViewModel(application) {
+    companion object {
+        private const val TAG = "RecipeViewModel"
+    }
 
     private val repository = RecipeRepository(application)
 
@@ -24,6 +35,9 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _uploadState = MutableStateFlow(UploadState())
+    val uploadState: StateFlow<UploadState> = _uploadState
 
     init {
         loadRecipes()
@@ -86,5 +100,35 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
                 _isLoading.value = false
             }
         }
+    }
+
+    fun addRecipeWithImage(recipe: Recipe, imageUri: Uri?) {
+        Log.d(TAG, "🚀 Starting recipe upload process...")
+        
+        viewModelScope.launch {
+            try {
+                // Reset upload state
+                _uploadState.value = UploadState(isLoading = true)
+                Log.d(TAG, "📤 Upload state set to loading")
+
+                // Upload recipe with image
+                val result = repository.addRecipeWithImage(recipe, imageUri)
+                
+                // Update success state
+                _uploadState.value = UploadState(isSuccess = true)
+                Log.d(TAG, "✅ Recipe upload completed successfully")
+                
+                // Refresh recipes list
+                loadRecipes()
+                
+            } catch (e: Exception) {
+                Log.e(TAG, "❌ Recipe upload failed: ${e.message}", e)
+                _uploadState.value = UploadState(error = e.message ?: "Upload failed")
+            }
+        }
+    }
+
+    fun resetUploadState() {
+        _uploadState.value = UploadState()
     }
 }

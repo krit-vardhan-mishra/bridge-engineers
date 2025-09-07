@@ -17,21 +17,30 @@ import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
 import com.just_for_fun.recipeapp.MainActivity
 import com.just_for_fun.recipeapp.model.Recipe
+import com.just_for_fun.recipeapp.viewmodel.RecipeViewModel
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
+    companion object {
+        private const val CAMERA_PERMISSION_REQUEST_CODE = 101
+        private const val TAG = "AddRecipeLayout"
+    }
 
     private var selectedImageUri: Uri? = null
 
@@ -49,11 +58,13 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
     private lateinit var etIngredients: TextInputEditText
     private lateinit var etInstructions: TextInputEditText
     private lateinit var etCloseRecipe: ImageButton
+    private lateinit var uploadProgressBar: ProgressBar
 
     private var addRecipeListener: AddRecipeListener? = null
+    private val viewModel: RecipeViewModel by activityViewModels()
 
     interface AddRecipeListener {
-        fun onRecipeAdded(recipe: Recipe)
+        fun onRecipeAdded(recipe: Recipe, imageUri: android.net.Uri?)
     }
 
     fun setAddRecipeListener(listener: MainActivity?) {
@@ -94,6 +105,7 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         initViews(view)
         setupClickListeners()
         setupDifficultyDropdown()
+        observeUploadState()
         hide()
     }
 
@@ -112,6 +124,48 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         etIngredients = view.findViewById(R.id.et_ingredients)
         etInstructions = view.findViewById(R.id.et_instructions)
         etCloseRecipe = view.findViewById(R.id.btn_close_add_recipe)
+        uploadProgressBar = view.findViewById(R.id.upload_progress_bar)
+    }
+
+    private fun observeUploadState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uploadState.collect { state ->
+                when {
+                    state.isLoading -> {
+                        Log.d(TAG, "🔄 Upload in progress...")
+                        showLoadingState(true)
+                    }
+                    state.isSuccess -> {
+                        Log.d(TAG, "✅ Upload completed successfully!")
+                        showLoadingState(false)
+                        Toast.makeText(requireContext(), "Recipe saved successfully!", Toast.LENGTH_SHORT).show()
+                        clearForm()
+                        hide()
+                        viewModel.resetUploadState()
+                    }
+                    state.error != null -> {
+                        Log.e(TAG, "❌ Upload failed: ${state.error}")
+                        showLoadingState(false)
+                        Toast.makeText(requireContext(), "Failed to save recipe: ${state.error}", Toast.LENGTH_LONG).show()
+                        viewModel.resetUploadState()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showLoadingState(isLoading: Boolean) {
+        if (isLoading) {
+            Log.d(TAG, "📱 Showing loading spinner...")
+            uploadProgressBar.visibility = View.VISIBLE
+            btnSaveRecipe.isEnabled = false
+            btnSaveRecipe.text = "Uploading..."
+        } else {
+            Log.d(TAG, "📱 Hiding loading spinner...")
+            uploadProgressBar.visibility = View.GONE
+            btnSaveRecipe.isEnabled = true
+            btnSaveRecipe.text = "Save Recipe"
+        }
     }
 
     private fun setupClickListeners() {
@@ -217,6 +271,8 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
     }
 
     private fun saveRecipe() {
+        Log.d(TAG, "🚀 Save recipe button clicked - starting validation...")
+        
         val name = etRecipeName.text.toString().trim()
         val cookingTime = etCookingTime.text.toString().trim()
         val servings = etServings.text.toString().trim()
@@ -227,9 +283,12 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
 
         var isValid = true
 
+        Log.d(TAG, "📝 Validating recipe fields...")
+
         if (name.isEmpty()) {
             etRecipeName.error = "Recipe name is required"
             isValid = false
+            Log.w(TAG, "⚠️ Validation failed: Recipe name is empty")
         } else {
             etRecipeName.error = null
         }
@@ -237,6 +296,7 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         if (cookingTime.isEmpty()) {
             etCookingTime.error = "Cooking time is required"
             isValid = false
+            Log.w(TAG, "⚠️ Validation failed: Cooking time is empty")
         } else {
             etCookingTime.error = null
         }
@@ -244,6 +304,7 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         if (servings.isEmpty()) {
             etServings.error = "Servings is required"
             isValid = false
+            Log.w(TAG, "⚠️ Validation failed: Servings is empty")
         } else {
             etServings.error = null
         }
@@ -251,6 +312,7 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         if (difficulty.isEmpty()) {
             etDifficulty.error = "Difficulty is required"
             isValid = false
+            Log.w(TAG, "⚠️ Validation failed: Difficulty is empty")
         } else {
             etDifficulty.error = null
         }
@@ -258,6 +320,7 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         if (ingredients.isEmpty()) {
             etIngredients.error = "Ingredients are required"
             isValid = false
+            Log.w(TAG, "⚠️ Validation failed: Ingredients are empty")
         } else {
             etIngredients.error = null
         }
@@ -265,15 +328,18 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
         if (instructions.isEmpty()) {
             etInstructions.error = "Instructions are required"
             isValid = false
+            Log.w(TAG, "⚠️ Validation failed: Instructions are empty")
         } else {
             etInstructions.error = null
         }
 
         if (isValid) {
+            Log.d(TAG, "✅ Validation passed - creating recipe object...")
+            
             val newRecipe = Recipe(
                 id = "", // Let the backend assign the ID
                 name = name,
-                image = selectedImageUri?.toString() ?: "", // Use actual image or empty string
+                image = "", // Will be set by backend after upload
                 cookingTime = cookingTime,
                 difficulty = difficulty,
                 rating = 0.0f,
@@ -285,10 +351,19 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
                 createdDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).format(Date())
             )
 
-            addRecipeListener?.onRecipeAdded(newRecipe)
-            Toast.makeText(requireContext(), "Recipe added!", Toast.LENGTH_SHORT).show()
-            clearForm()
-            hide()
+            Log.d(TAG, "📤 Calling upload with recipe: ${newRecipe.name}")
+            if (selectedImageUri != null) {
+                Log.d(TAG, "🖼️ Image attached: $selectedImageUri")
+            } else {
+                Log.d(TAG, "ℹ️ No image attached")
+            }
+
+            // Use the listener to trigger upload through MainActivity -> ViewModel
+            addRecipeListener?.onRecipeAdded(newRecipe, selectedImageUri)
+            
+        } else {
+            Log.w(TAG, "❌ Validation failed - not proceeding with upload")
+            Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -340,9 +415,5 @@ class AddRecipeLayout : Fragment(R.layout.add_recipe_layout) {
                 addRecipeCard.translationY = 0f
             }
             .start()
-    }
-
-    companion object {
-        private const val CAMERA_PERMISSION_REQUEST_CODE = 101
     }
 }
